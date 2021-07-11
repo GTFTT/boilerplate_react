@@ -7,9 +7,6 @@ const ACTION_TYPES = {
     set: "set",
 }
 
-const DEFAULT_FILE_SAVING_PATH = ''
-
-
 module.exports = {
     ACTION_TYPES,
 };
