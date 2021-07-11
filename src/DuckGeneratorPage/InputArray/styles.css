@@ -1,0 +1,14 @@
+.item {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.input {
+    width: 30vw;
+}
+
+.select {
+    width: 15vw;
+}
+
