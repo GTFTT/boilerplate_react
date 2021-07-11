@@ -7,7 +7,7 @@ import { v4 } from 'uuid';
 import { constantCase } from 'change-case';
 
 //proj
-import { ACTION_TYPES } from './../constants';
+import { ACTION_TYPES } from 'globalConstants';
 
 //own
 import './styles.css';
@@ -15,27 +15,39 @@ import './styles.css';
 const Item = List.Item;
 const Option = Select.Option;
 
+/**
+ * Generate array which represents one action.
+ * 
+ * @property { Function(actions) } actionsChanged - callback, called when actions are changed
+ */
 export default class InputArray extends React.Component {
     constructor(props) {
         super(props);
 
         //Init state obj
         this.state = {
-            inputValues: [
-                {
-                    value: "test action",
-                    key: v4(),
-                }
-            ]
+            actions: []
         };
     }
 
+    /**
+     * Used to update state and perform additional actions.
+     * Call callback functions if something changed.
+     * @param {*} newState 
+     */
+    updateState = (newState) => {
+        const { actionsChanged } = this.props;
+
+        this.setState(newState, () => actionsChanged && actionsChanged(_.get(this, 'state.actions')))
+    }
+
     createNewItem = () => {
-        this.setState({
-            inputValues: [
-                ..._.get(this, 'state.inputValues'),
+        this.updateState({
+            actions: [
+                ..._.get(this, 'state.actions'),
                 {
-                    value: "new action",
+                    actionName: "vehicles",
+                    actionType: ACTION_TYPES.fetch,
                     key: v4(),
                 }
             ]
@@ -43,23 +55,35 @@ export default class InputArray extends React.Component {
     }
 
     deleteItem = (key) => {
-        this.setState({
-            inputValues: [
-                ..._.filter(_.get(this, 'state.inputValues'), (item) => item.key != key),
+        this.updateState({
+            actions: [
+                ..._.filter(_.get(this, 'state.actions'), (item) => item.key != key),
             ]
         })
     }
 
-    onChangeInputValue = (key, newText) => {
-        const inputValues = _.get(this, 'state.inputValues');
+    /**
+     * When changed input value of an action.
+     * Values will be replaced only if they are provided
+     * @param {*} key - uuid
+     * @param {*} params - action
+     */
+    onChangeInputValue = (key, {actionName, actionType}) => {
+        const actions = _.get(this, 'state.actions');
 
-        const newInputValues = _.map(inputValues, (item) => {
-            if(item.key == key) return {...item, value: newText}
-            return item
+        const newInputValues = _.map(actions, (item) => {
+            if(item.key == key)
+                return {
+                    ...item,
+                    actionName: actionName? actionName: item.actionName,
+                    actionType: actionType? actionType: item.actionType,
+                }
+            else
+                return item;
         })
 
-        this.setState({
-            inputValues: newInputValues
+        this.updateState({
+            actions: newInputValues
         })
     } 
 
@@ -68,11 +92,13 @@ export default class InputArray extends React.Component {
 
         return (
             <div>
-                <button onClick={() => this.createNewItem()}>Press</button>
                 <List
                     size={"small"}
                     bordered
-                    dataSource={_.get(this, 'state.inputValues')}
+                    dataSource={_.get(this, 'state.actions')}
+                    header={
+                        <Button onClick={() => this.createNewItem()} type="primary">Create a new one</Button>
+                    }
                     renderItem={item => (
                         <Item
                             actions={[
@@ -80,9 +106,17 @@ export default class InputArray extends React.Component {
                             ]}
                         >
                             <div className={"item"}>
-                                <Input className="input" value={_.get(item, 'value')} onChange={(e) => this.onChangeInputValue(item.key, e.target.value)} />
+                                <Input
+                                    className="input"
+                                    value={_.get(item, 'actionName')}
+                                    onChange={(e) => this.onChangeInputValue(item.key, {actionName: e.target.value})}
+                                />
 
-                                <Select defaultValue={ACTION_TYPES.fetch} className="select">
+                                <Select
+                                    value={_.get(item, 'actionType')}
+                                    className="select"
+                                    onChange={(key) => this.onChangeInputValue(item.key, {actionType: key})}
+                                >
                                     <Option value={ACTION_TYPES.fetch}>{constantCase(ACTION_TYPES.fetch)}</Option>
                                     <Option value={ACTION_TYPES.set}>{constantCase(ACTION_TYPES.set)}</Option>
                                 </Select>
