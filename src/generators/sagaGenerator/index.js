@@ -34,34 +34,34 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    ${_.map(fetchActions, ({actionName, actionType}) => constantCase(`${actionType} ${actionName}`)).join(",\n")}
+    ${_.map(fetchActions, ({constants}) => constants.fetch).join(",\n")}
 
-    ${_.map(fetchActions, ({actionName, actionType}) => camelCase(`${actionType} ${actionName} success`)).join(",\n")}
+    ${_.map(fetchActions, ({actionCreators}) => actionCreators.fetchSuccess).join(",\n")}
 
-    ${_.map(setActions, ({actionName, actionType}) => camelCase(`${actionType} ${actionName}`)).join(",\n")}
+    ${_.map(setActions, ({actionCreators}) => actionCreators.set).join(",\n")}
 } from './duck';
         `
         return result;
     }
 
     function generateSagas() {
-        let result = _.map(fetchActions, ({actionName, actionType, actionFetchURL}) => {
+        let result = _.map(fetchActions, ({actionName, constants, actionCreators, actionFetchURL, sagas}) => {
             return `
-export function* ${camelCase(`${actionType} ${actionName} saga`)}() {
+export function* ${sagas.sagaName}() {
     while (true) {
         try {
-            yield take(${constantCase(`${actionType} ${actionName}`)});
+            yield take(${constants.fetch});
 
-            yield put(${camelCase(`set fetching ${actionName}`)}(true));
+            yield put(${actionCreators.setFetching}(true));
 
             const ${camelCase(`${actionName}`)} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);
 
-            yield put(${camelCase(`${actionType} ${actionName} success`)}({${camelCase(`${actionName}`)}}));
+            yield put(${actionCreators.fetchSuccess}({${camelCase(`${actionName}`)}}));
 
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(${camelCase(`set fetching ${actionName}`)}(false));
+            yield put(${actionCreators.setFetching}(false));
         }
     }
 }\n
@@ -76,7 +76,7 @@ export function* ${camelCase(`${actionType} ${actionName} saga`)}() {
         `
 export function* saga() {
     yield all([
-        ${_.map(fetchActions, ({actionName, actionType, actionFetchURL}) => `call(${camelCase(`${actionType} ${actionName} saga`)}),\n`)}
+        ${_.map(fetchActions, ({sagas}) => `call(${sagas.sagaName}),\n`)}
     ]);
 }
         `
