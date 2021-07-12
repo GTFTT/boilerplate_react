@@ -5,29 +5,31 @@ import { ACTION_TYPES } from 'globalConstants';
 
 //own
 import duckGenerator from './duckGenerator';
+import sagaGenerator from './sagaGenerator';
 
+/**
+ * 
+ * @param {*} params.moduleName 
+ * @param {*} params.actions  - Array of action objects
+ * @example
+ *  const actions = [
+ *      {
+ *          actionName: 'vehicles',
+ *          actionType: ACTION_TYPES.fetch
+ *      },
+ *      {
+ *          actionName: 'recommendations',
+ *          actionType: ACTION_TYPES.fetch
+ *      },
+ *      {
+ *          actionName: 'vehiclesFetching',
+ *          actionType: ACTION_TYPES.set
+ *      },
+ *  ];
+ */
 export default ({moduleName, actions}) => {
 
-    /**
-     * 
-     * @param {*} actions  - Array of action objects
-     * @param {*} filepath  - where to save generated outpu
-     * @example
-     *  const actions = [
-     *      {
-     *          actionName: 'vehicles',
-     *          actionType: ACTION_TYPES.fetch
-     *      },
-     *      {
-     *          actionName: 'recommendations',
-     *          actionType: ACTION_TYPES.fetch
-     *      },
-     *      {
-     *          actionName: 'vehiclesFetching',
-     *          actionType: ACTION_TYPES.set
-     *      },
-     *  ];
-     */
+    
     function generateDuckFile() {
         const {
             generateHeader,
@@ -50,7 +52,24 @@ export default ({moduleName, actions}) => {
         return data;
     }
 
+    function generateSagaFile() {
+        const {
+            generateImports,
+            generateSagas,
+            generateCommonSaga,
+        } = sagaGenerator({moduleName, actions});
+
+        // Data which will write in a file. 
+        let data = ""
+            + generateImports() + "\n\n"
+            + generateSagas() + "\n"
+            + generateCommonSaga() + "\n";
+
+        return data;
+    }
+
     return {
         generateDuckFile,
+        generateSagaFile,
     };
 }

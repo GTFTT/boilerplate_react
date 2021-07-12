@@ -22,7 +22,7 @@ export default class DuckGeneratorPage extends React.Component {
         };
     }
 
-    onGenerateDuckFile = () => {
+    onGenerateFiles = () => {
         const {moduleName, actions} = this.state;
 
         if(!moduleName || _.isEmpty(actions)) {
@@ -30,10 +30,10 @@ export default class DuckGeneratorPage extends React.Component {
             return;
         }
 
-        const { generateDuckFile } = generators({actions, moduleName});
+        const { generateDuckFile, generateSagaFile } = generators({actions, moduleName});
         
-        const fileContent = generateDuckFile();
-        downloadTxtFile(fileContent);
+        downloadTxtFile(generateDuckFile(), "duck.txt");
+        downloadTxtFile(generateSagaFile(), "saga.txt");
 
         notification.info({
             message: (
@@ -48,7 +48,7 @@ export default class DuckGeneratorPage extends React.Component {
     render() {
         return (
             <div>
-                <Collapse defaultActiveKey={['1', '2']} onChange={(key) => console.log("Change: ", key)}>
+                <Collapse defaultActiveKey={['1', '2']}>
                     <Panel header="Enter module name" key="1">
                         <Input
                             placeholder="Module name"
@@ -64,7 +64,7 @@ export default class DuckGeneratorPage extends React.Component {
                     </Panel>
                 </Collapse>
 
-                <Button onClick={() => this.onGenerateDuckFile()}>Generate file</Button>
+                <Button onClick={() => this.onGenerateFiles()}>Generate file</Button>
             </div>
         );
     }

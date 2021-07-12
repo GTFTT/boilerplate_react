@@ -1,6 +1,10 @@
 import { constantCase, camelCase } from 'change-case'; //For convering different types of variables(camelcase, snake case, etc.)
 import _ from 'lodash';
 
+
+//TODO generate set fetching for actions of type fetch
+//TODO generate and save all constant names directly in "actions" object
+
 import { ACTION_TYPES } from 'globalConstants';
 
 /**
