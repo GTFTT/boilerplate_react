@@ -45,7 +45,7 @@ import {
     }
 
     function generateSagas() {
-        let result = _.map(fetchActions, ({actionName, constants, actionCreators, actionFetchURL, sagas}) => {
+        let result = _.map(fetchActions, ({propertyName, constants, actionCreators, actionFetchURL, sagas,}) => {
             return `
 export function* ${sagas.sagaName}() {
     while (true) {
@@ -54,9 +54,9 @@ export function* ${sagas.sagaName}() {
 
             yield put(${actionCreators.setFetching}(true));
 
-            const ${camelCase(`${actionName}`)} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);
+            const ${propertyName} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);
 
-            yield put(${actionCreators.fetchSuccess}({${camelCase(`${actionName}`)}}));
+            yield put(${actionCreators.fetchSuccess}({${propertyName}}));
 
         } catch (error) {
             yield put(emitError(error));

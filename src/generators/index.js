@@ -40,6 +40,19 @@ function enrichActions(actions) {
                 enriched.sagas = {
                     sagaName: camelCase(`${action.actionType} ${action.actionName} saga`)
                 }
+
+                //Used to store data inside them
+                enriched.valueNames = {
+                    value: camelCase(`${action.actionName}`),
+                    fetchingValue: camelCase(`fetching ${action.actionName}`)
+                }
+
+                enriched.selectors = {
+                    value: camelCase(`select ${action.actionName}`),
+                    fetchingValue: camelCase(`select fetching ${action.actionName}`)
+                }
+
+                enriched.propertyName = camelCase(action.actionName);
                 break;
 
             case ACTION_TYPES.set:
@@ -50,6 +63,16 @@ function enrichActions(actions) {
                 enriched.actionCreators = {
                     set: camelCase(`${action.actionType} ${action.actionName}`),
                 }
+
+                enriched.valueNames = {
+                    value: camelCase(`${action.actionName}`)
+                }
+
+                enriched.selectors = {
+                    value: camelCase(`select ${action.actionName}`),
+                }
+
+                enriched.propertyName = camelCase(action.actionName);
                 break;
         }
 

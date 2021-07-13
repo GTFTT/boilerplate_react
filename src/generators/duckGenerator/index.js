@@ -1,10 +1,6 @@
 import { constantCase, camelCase } from 'change-case'; //For convering different types of variables(camelcase, snake case, etc.)
 import _ from 'lodash';
 
-
-//TODO generate set fetching for actions of type fetch
-//TODO generate and save all constant names directly in "actions" object
-
 import { ACTION_TYPES } from 'globalConstants';
 
 /**
@@ -15,40 +11,76 @@ function lines(text) {
     return _.compact(text).join("\n");
 }
 
-function generateConstant({ actionType, actionName }) {
-    const actionToBeInserted = constantCase(String(`${actionType} ${actionName}`));
-    let result = `export const ${actionToBeInserted} = \`\${prefix}/${actionToBeInserted}\`;\n`;
+function generateConstant({ actionType, constants }) {
+    let result = "";
 
-    if(actionType == ACTION_TYPES.fetch) {
-        result +=`export const ${actionToBeInserted}_SUCCESS = \`\${prefix}/${actionToBeInserted}_SUCCESS\`;\n`;
+    switch (actionType) {
+        case ACTION_TYPES.fetch:
+            result +=`export const ${constants.fetch} = \`\${prefix}/${constants.fetch}\`;\n`;
+            result +=`export const ${constants.fetchSuccess} = \`\${prefix}/${constants.fetchSuccess}\`;\n`;
+            result +=`export const ${constants.setFetching} = \`\${prefix}/${constants.setFetching}\`;\n\n`;
+            break;
+
+        case ACTION_TYPES.set:
+            result +=`export const ${constants.set} = \`\${prefix}/${constants.set}\`;\n`;
+            break;
     }
 
     return result;
 }
 
-/** Reducer snippet is on line that contains variable name */
-function generateReducerInitStateSnippet({ actionName }) {
-    const actionToBeInserted = camelCase(String(actionName));
-    return `${actionToBeInserted},\n`;
+/** Reducer snippet is a line that contains variable name */
+function generateReducerInitStateSnippet({ actionName, actionType, valueNames }) {
+    let res = "";
+
+    switch (actionType) {
+        case ACTION_TYPES.fetch:
+            res += `\t${valueNames.value},\n`;
+            res += `\t${valueNames.fetchingValue},\n\n`;
+            break;
+
+        case ACTION_TYPES.set:
+            res += `\t${valueNames.value},\n`;
+            break;    
+    }
+
+    return res;
 }
 
 
 /**
- * Reducer's state changer inside swith statement
+ * Reducer's state changer inside switch statement
  */
-function generateReducerSnippet({ actionType, actionName }) {
-    const actionConstant = constantCase(String(`${actionType} ${actionName}`));
-    const actionVariable = camelCase(String(actionName));
-    let result = lines([
-        `\t\tcase ${actionConstant}:`,
-        (actionType == ACTION_TYPES.fetch) ? `\t\t\tconst { ${actionVariable} } = payload;`: undefined,
-        '\t\t\treturn {',
-        '\t\t\t\t...state, ',
-        `\t\t\t\t${actionVariable}: ${(actionType == ACTION_TYPES.fetch) ? `${actionVariable},`: `payload,`}`,
-        '\t\t\t};'
-    ]);
+function generateReducerSnippet({ actionType, constants, valueNames }) {
+    let result = "";
 
-    result += '\n';
+    switch (actionType) {
+        case ACTION_TYPES.fetch:
+            result = lines([
+                `\t\tcase ${constants.fetchSuccess}:`,
+                `\t\t\tconst { ${valueNames.value} } = payload;`,
+                '\t\t\treturn {',
+                '\t\t\t\t...state, ',
+                `\t\t\t\t${valueNames.value}: ${valueNames.value},`,
+                '\t\t\t};',
+                `\t\tcase ${constants.setFetching}:`,
+                '\t\t\treturn {',
+                '\t\t\t\t...state, ',
+                `\t\t\t\t${valueNames.fetchingValue}: payload,`,
+                '\t\t\t};\n\n'
+            ]);
+            break;
+
+        case ACTION_TYPES.set:
+            result = lines([
+                `\t\tcase ${constants.set}:`,
+                '\t\t\treturn {',
+                '\t\t\t\t...state, ',
+                `\t\t\t\t${valueNames.value}: payload`,
+                '\t\t\t};\n\n'
+            ]);
+            break;
+    }
 
     return result;
 }
@@ -56,26 +88,40 @@ function generateReducerSnippet({ actionType, actionName }) {
 /**
  * Actions are functions that can be called when you want to change the state
  */
-function generateActionSnippet({ actionType, actionName }) {
+function generateActionSnippet({ actionType, actionName, actionCreators, constants, valueNames }) {
     const actionConstant = constantCase(String(`${actionType} ${actionName}`));
     const functionName = camelCase(String(`${actionType} ${actionName}`));
 
-    let result = lines([
-        `export const ${functionName} = () => ({`,
-        `\ttype: \t${actionConstant},`,
-        '});\n\n'
-    ]);
+    let res = "";
 
-    if(actionType == ACTION_TYPES.fetch) {
-        result += lines([
-            '',
-            `export const ${functionName}Success = () => ({`,
-            `\ttype: \t${actionConstant}_SUCCESS,`,
-            '});\n\n'
-        ]);
+    switch (actionType) {
+        case ACTION_TYPES.fetch:
+            res += lines([
+                `export const ${actionCreators.fetch} = () => ({`,
+                `\ttype: \t${constants.fetch},`,
+                '});\n',
+                `export const ${actionCreators.fetchSuccess} = ({${valueNames.value}}) => ({`,
+                `\ttype: \t${constants.fetchSuccess},`,
+                `\tpayload: {${valueNames.value}}`,
+                '});\n',
+                `export const ${actionCreators.setFetching} = (value) => ({`,
+                `\ttype: \t${constants.setFetching},`,
+                '\tpayload: value',
+                '});\n\n'
+            ]);
+            break;
+
+        case ACTION_TYPES.set:
+            res += lines([
+                `export const ${actionCreators.set} = (value) => ({`,
+                `\ttype: \t${constants.set},`,
+                '\tpayload: value',
+                '});\n'
+            ]);
+            break;    
     }
 
-    return result;
+    return res;
 }
 
 /**
@@ -89,7 +135,6 @@ function generateActionSnippet({ actionType, actionName }) {
 export default ({moduleName, actions}) => {
 
     /**
-     * Generate header of a duck file
      * @returns Header of a duck file
      */
     function generateHeader() {
@@ -105,7 +150,6 @@ export default ({moduleName, actions}) => {
 
     /**
      * @param {*} params.actions - actions to generate constants for
-     * @returns 
      */
     function generateConstants() {
         let result = "";
@@ -121,10 +165,10 @@ export default ({moduleName, actions}) => {
         let result = lines([
             '/** ------------------------------------- Reducer ------------------------------------- **/',
             'const ReducerState = {\n',
+        ]);
 
-    ]);
         _.each(actions, (action) => {
-            result+='\t' + generateReducerInitStateSnippet(action);
+            result += generateReducerInitStateSnippet(action);
         });
         result+= '};\n';
 
@@ -153,15 +197,24 @@ export default ({moduleName, actions}) => {
     }
 
     function generateSelectors() {
-        let result = lines([
+        let res = lines([
             `/* ------------------------------------- Selectors ------------------------------------- */\n`,
         ]);
 
-        _.each(actions, ({ actionType, actionName }) => {
-            result += `export const ${camelCase(`select ${actionName}`)} = state => state[ moduleName ].${camelCase(actionName)};\n`;
+        _.each(actions, ({ actionType, actionName, selectors, valueNames }) => {
+            switch (actionType) {
+                case ACTION_TYPES.fetch:
+                    res += `export const ${selectors.value} = state => state[ moduleName ].${valueNames.value};\n`;
+                    res += `export const ${selectors.fetchingValue} = state => state[ moduleName ].${valueNames.fetchingValue};\n\n`;
+                    break;
+        
+                case ACTION_TYPES.set:
+                    res += `export const ${selectors.value} = state => state[ moduleName ].${valueNames.value};\n`;
+                    break;    
+            }
         });
     
-        return result;
+        return res;
     }
 
     function generateActionCreators() {
