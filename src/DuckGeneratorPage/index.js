@@ -41,9 +41,6 @@ export default class DuckGeneratorPage extends React.Component {
             message: (
                 <div>
                     <div>{`Module: ${moduleName}`}</div>
-                    <div>
-                        <ReactJson src={actions} />
-                    </div>
                 </div>
             )
         });
@@ -80,7 +77,7 @@ export default class DuckGeneratorPage extends React.Component {
                         displayObjectSize={false}
                         displayDataTypes={false}
                         collapseStringsAfterLength={true}
-                        style={{fontSize: '0.5em', justifyContent: 'flex-start'}} src={actions} />
+                        style={{fontSize: '0.5em', width: '100%'}} src={actions} />
                 </div>
             </div>
         );
