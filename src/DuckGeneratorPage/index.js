@@ -2,6 +2,7 @@
 import React from 'react';
 import { Collapse, Input, Button, notification } from 'antd';
 import _ from 'lodash';
+import ReactJson from 'react-json-view'
 
 //proj
 import generators from "generators";
@@ -9,6 +10,7 @@ import { downloadTxtFile } from '../utils';
 
 //own
 import InputArray from './InputArray';
+import "./styles.css";
 
 const Panel = Collapse.Panel;
 
@@ -39,13 +41,18 @@ export default class DuckGeneratorPage extends React.Component {
             message: (
                 <div>
                     <div>{`Module: ${moduleName}`}</div>
-                    <div>{`Actions: ${JSON.stringify(actions)}`}</div>
+                    <div>
+                        <ReactJson src={actions} />
+                    </div>
                 </div>
             )
         });
     }
 
     render() {
+
+        const { actions } = this.state;
+
         return (
             <div>
                 <Collapse defaultActiveKey={['1', '2']}>
@@ -64,7 +71,17 @@ export default class DuckGeneratorPage extends React.Component {
                     </Panel>
                 </Collapse>
 
-                <Button onClick={() => this.onGenerateFiles()}>Generate file</Button>
+                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate file</Button>
+
+                <div className="jsonContainer">
+                    <ReactJson
+                        name={false}
+                        collapsed={false}
+                        displayObjectSize={false}
+                        displayDataTypes={false}
+                        collapseStringsAfterLength={true}
+                        style={{fontSize: '0.5em', justifyContent: 'flex-start'}} src={actions} />
+                </div>
             </div>
         );
     }

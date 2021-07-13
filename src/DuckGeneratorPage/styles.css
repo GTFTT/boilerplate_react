@@ -1,0 +1,8 @@
+.generateButton {
+    margin: 2em;
+}
+
+.jsonContainer {
+    display: flex;
+    justify-content: flex-start;
+}
