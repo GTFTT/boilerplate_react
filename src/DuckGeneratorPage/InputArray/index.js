@@ -96,6 +96,7 @@ export default class InputArray extends React.Component {
                     size={"small"}
                     bordered
                     dataSource={_.get(this, 'state.actions')}
+                    locale={{emptyText: (<div>No actions</div>)}}
                     header={
                         <Button onClick={() => this.createNewItem()} type="primary">Create a new one</Button>
                     }
