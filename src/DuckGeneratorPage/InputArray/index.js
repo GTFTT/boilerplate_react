@@ -16,7 +16,15 @@ const Item = List.Item;
 const Option = Select.Option;
 
 /**
- * Generate array which represents one action.
+ * Generate array which represents one action. This action contains basic variables gained from the user.
+ * 
+ * action: {
+ *      actionName,
+ *      actionType,
+ *      actionFetchURL,
+ *      actionInitValue,
+ *      key
+ * }
  * 
  * @property { Function(actions) } actionsChanged - callback, called when actions are changed
  */
@@ -41,6 +49,9 @@ export default class InputArray extends React.Component {
         this.setState(newState, () => actionsChanged && actionsChanged(_.get(this, 'state.actions')))
     }
 
+    /**
+     * Generate new action with initial values setup
+     */
     createNewItem = () => {
         this.updateState({
             actions: [
@@ -78,13 +89,13 @@ export default class InputArray extends React.Component {
                             value={actionFetchURL}
                             className="input"
                             placeholder="Fetching URL"
-                            onChange={(e) => this.onChangeInputValue(key, {actionFetchURL: e.target.value})}
+                            onChange={(e) => this.changeActionProps(key, {actionFetchURL: e.target.value})}
                         />
                         <Select
                             value={actionInitValue}
                             className="select"
                             placeholder="Init value"
-                            onChange={(initValue) => this.onChangeInputValue(key, {actionInitValue: initValue})}
+                            onChange={(initValue) => this.changeActionProps(key, {actionInitValue: initValue})}
                         >
                             {_.map(DEF_INIT_VALUES, (value, key) => {
                                 return (
@@ -100,7 +111,7 @@ export default class InputArray extends React.Component {
                         value={actionInitValue}
                         className="select"
                         placeholder="Select init value"
-                        onChange={(initValue) => this.onChangeInputValue(key, {actionInitValue: initValue})}
+                        onChange={(initValue) => this.changeActionProps(key, {actionInitValue: initValue})}
                     >
                         {_.map(DEF_INIT_VALUES, (value, key) => {
                             return (
@@ -121,24 +132,24 @@ export default class InputArray extends React.Component {
      * @param {*} key - uuid
      * @param {*} params - action
      */
-    onChangeInputValue = (key, {actionName, actionType, actionInitValue, actionFetchURL}) => {
+    changeActionProps = (key, {actionName, actionType, actionInitValue, actionFetchURL}) => {
         const actions = _.get(this, 'state.actions');
 
-        const newInputValues = _.map(actions, (item) => {
+        const updatedActions = _.map(actions, (item) => {
             if(item.key == key)
                 return {
                     ...item,
                     actionName: actionName? actionName: item.actionName,
                     actionType: actionType? actionType: item.actionType,
                     actionInitValue: actionInitValue? actionInitValue: item.actionInitValue,
-                    actionFetchURL: actionFetchURL? actionFetchURL: item.actionFetchURL,
+                    actionFetchURL: (actionFetchURL || actionFetchURL === "")? actionFetchURL: item.actionFetchURL,
                 }
             else
                 return item;
         })
 
         this.updateState({
-            actions: newInputValues
+            actions: updatedActions
         })
     } 
 
@@ -165,13 +176,13 @@ export default class InputArray extends React.Component {
                                 <Input
                                     value={_.get(item, 'actionName')}
                                     className="input"
-                                    onChange={(e) => this.onChangeInputValue(item.key, {actionName: e.target.value})}
+                                    onChange={(e) => this.changeActionProps(item.key, {actionName: e.target.value})}
                                 />
 
                                 <Select
                                     value={_.get(item, 'actionType')}
                                     className="select"
-                                    onChange={(key) => this.onChangeInputValue(item.key, {actionType: key})}
+                                    onChange={(key) => this.changeActionProps(item.key, {actionType: key})}
                                 >
                                     <Option value={ACTION_TYPES.fetch}>{constantCase(ACTION_TYPES.fetch)}</Option>
                                     <Option value={ACTION_TYPES.set}>{constantCase(ACTION_TYPES.set)}</Option>
