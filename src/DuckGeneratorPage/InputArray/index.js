@@ -4,7 +4,7 @@ import { Input, List, Button, Select } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
-import { constantCase, sentenceCase } from 'change-case';
+import { camelCase, constantCase, sentenceCase } from 'change-case';
 
 //proj
 import { ACTION_TYPES, DEF_INIT_VALUES } from 'globalConstants';
@@ -106,6 +106,8 @@ export default class InputArray extends React.Component {
                     </div>
                 )
             case ACTION_TYPES.set:
+            case ACTION_TYPES.poorSagaAction:
+            case ACTION_TYPES.poorReducerAction:
                 return (
                     <Select
                         value={actionInitValue}
@@ -184,8 +186,7 @@ export default class InputArray extends React.Component {
                                     className="select"
                                     onChange={(key) => this.changeActionProps(item.key, {actionType: key})}
                                 >
-                                    <Option value={ACTION_TYPES.fetch}>{constantCase(ACTION_TYPES.fetch)}</Option>
-                                    <Option value={ACTION_TYPES.set}>{constantCase(ACTION_TYPES.set)}</Option>
+                                    {_.map(ACTION_TYPES, (value, key) => (<Option value={value}>{constantCase(key)}</Option>))}
                                 </Select>
 
                                 <div>

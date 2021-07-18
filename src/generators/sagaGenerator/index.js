@@ -14,6 +14,7 @@ import { ACTION_TYPES } from 'globalConstants';
 export default ({moduleName, actions}) => {
 
     const fetchActions = _.filter(actions, (obj) => obj.actionType == ACTION_TYPES.fetch)
+    const poorSagaActions = _.filter(actions, (obj) => obj.actionType == ACTION_TYPES.poorSagaAction)
     const setActions = _.filter(actions, (obj) => obj.actionType == ACTION_TYPES.set)
 
     function generateImports() {
@@ -35,6 +36,7 @@ import { fetchAPI } from 'utils';
 // own
 import {
     ${_.map(fetchActions, ({constants}) => constants.fetch).join(",\n\t")}
+    ${_.map(poorSagaActions, ({constants}) => constants.poorSagaAction).join(",\n\t")}
 
     ${_.map(fetchActions, ({actionCreators}) => actionCreators.fetchSuccess).join(",\n\t")}
 
@@ -45,8 +47,11 @@ import {
     }
 
     function generateSagas() {
-        let result = _.map(fetchActions, ({propertyName, constants, actionCreators, actionFetchURL, sagas,}) => {
-            return `
+        let result = _.map(actions, ({actionType, propertyName, constants, actionCreators, actionFetchURL, sagas}) => {
+
+            switch (actionType) {
+                case ACTION_TYPES.fetch:
+                    return `
 export function* ${sagas.sagaName}() {
     while (true) {
         try {
@@ -65,7 +70,21 @@ export function* ${sagas.sagaName}() {
         }
     }
 }\n
-            `
+                    `
+                case ACTION_TYPES.poorSagaAction:
+                    return `
+export function* ${sagas.sagaName}() {
+    while (true) {
+        try {
+            yield take(${constants.poorSagaAction});
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}\n
+                    `
+            }
+            
         })
         return result;
     }
@@ -76,7 +95,16 @@ export function* ${sagas.sagaName}() {
         `
 export function* saga() {
     yield all([
-        ${_.map(fetchActions, ({sagas}) => `call(${sagas.sagaName}),\n`)}
+        ${
+            _.map(actions, ({actionType, sagas}) => {
+                switch (actionType) {
+                    case ACTION_TYPES.fetch:
+                    case ACTION_TYPES.poorSagaAction:
+                        return `call(${sagas.sagaName}),\n\t`;
+                }
+                
+            })
+        }
     ]);
 }
         `

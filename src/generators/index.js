@@ -74,6 +74,29 @@ function enrichActions(actions) {
 
                 enriched.propertyName = camelCase(action.actionName);
                 break;
+
+            case ACTION_TYPES.poorSagaAction:
+                enriched.constants = {
+                    poorSagaAction: constantCase(`${action.actionName}`),
+                }
+
+                enriched.sagas = {
+                    sagaName: camelCase(`${action.actionName} saga`)
+                }
+
+                enriched.actionCreators = {
+                    poorSagaAction: camelCase(`${action.actionName}`),
+                }
+
+            case ACTION_TYPES.poorReducerAction:
+                enriched.constants = {
+                    poorReducerAction: constantCase(`${action.actionName}`),
+                }
+
+                enriched.actionCreators = {
+                    poorReducerAction: camelCase(`${action.actionName}`),
+                }
+                break;
         }
 
         return enriched;

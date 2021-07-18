@@ -24,6 +24,14 @@ function generateConstant({ actionType, constants }) {
         case ACTION_TYPES.set:
             result +=`export const ${constants.set} = \`\${prefix}/${constants.set}\`;\n`;
             break;
+
+        case ACTION_TYPES.poorSagaAction:
+            result +=`export const ${constants.poorSagaAction} = \`\${prefix}/${constants.poorSagaAction}\`;\n`;
+            break;
+
+        case ACTION_TYPES.poorReducerAction:
+            result +=`export const ${constants.poorReducerAction} = \`\${prefix}/${constants.poorReducerAction}\`;\n`;
+            break;
     }
 
     return result;
@@ -80,6 +88,15 @@ function generateReducerSnippet({ actionType, constants, valueNames }) {
                 '\t\t\t};\n\n'
             ]);
             break;
+
+        case ACTION_TYPES.poorReducerAction:
+            result = lines([
+                `\t\tcase ${constants.poorReducerAction}:`,
+                '\t\t\treturn {',
+                '\t\t\t\t...state, ',
+                '\t\t\t};\n\n'
+            ]);
+            break;
     }
 
     return result;
@@ -89,9 +106,6 @@ function generateReducerSnippet({ actionType, constants, valueNames }) {
  * Actions are functions that can be called when you want to change the state
  */
 function generateActionSnippet({ actionType, actionName, actionCreators, constants, valueNames }) {
-    const actionConstant = constantCase(String(`${actionType} ${actionName}`));
-    const functionName = camelCase(String(`${actionType} ${actionName}`));
-
     let res = "";
 
     switch (actionType) {
@@ -118,7 +132,23 @@ function generateActionSnippet({ actionType, actionName, actionCreators, constan
                 '\tpayload: value',
                 '});\n'
             ]);
-            break;    
+            break;
+
+        case ACTION_TYPES.poorSagaAction:
+            res += lines([
+                `export const ${actionCreators.poorSagaAction} = () => ({`,
+                `\ttype: \t${constants.poorSagaAction},`,
+                '});\n'
+            ]);
+            break;
+
+        case ACTION_TYPES.poorReducerAction:
+            res += lines([
+                `export const ${actionCreators.poorReducerAction} = () => ({`,
+                `\ttype: \t${constants.poorReducerAction},`,
+                '});\n'
+            ]);
+            break;
     }
 
     return res;

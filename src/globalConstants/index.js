@@ -5,6 +5,8 @@
 const ACTION_TYPES = {
     fetch: "fetch",
     set: "set",
+    poorSagaAction: "poorSagaAction",
+    poorReducerAction: "poorReducerAction",
 }
 
 /**
