@@ -103,6 +103,7 @@ function enrichActions(actions) {
  */
 export default ({moduleName, actions}) => {
 
+    const moduleNameCamelCase = camelCase(moduleName);
     const enrichedActions = enrichActions(actions);
 
     console.log("enrichedActions: ", enrichedActions);
@@ -115,7 +116,7 @@ export default ({moduleName, actions}) => {
             generateReducer,
             generateSelectors,
             generateActionCreators,
-        } = duckGenerator({moduleName, actions: enrichedActions});
+        } = duckGenerator({moduleName: moduleNameCamelCase, actions: enrichedActions});
 
         // Data which will write in a file. 
         let data = ""
@@ -134,7 +135,7 @@ export default ({moduleName, actions}) => {
             generateImports,
             generateSagas,
             generateCommonSaga,
-        } = sagaGenerator({moduleName, actions: enrichedActions});
+        } = sagaGenerator({moduleName: moduleNameCamelCase, actions: enrichedActions});
 
         // Data which will write in a file. 
         let data = ""
