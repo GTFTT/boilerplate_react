@@ -16,6 +16,7 @@ import "./styles.css";
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
+const TextArea = Input.TextArea;
 
 export default class DuckGeneratorPage extends React.Component {
     constructor(props) {
@@ -23,6 +24,7 @@ export default class DuckGeneratorPage extends React.Component {
 
         this.state = {
             moduleName: undefined,
+            moduleDescription: undefined,
             generatingComponent: COMPONENT_TYPES.poorPage,
             actions: [],
         };
@@ -55,45 +57,57 @@ export default class DuckGeneratorPage extends React.Component {
         const { actions, generatingComponent } = this.state;
 
         return (
-            <div>
-                <Collapse defaultActiveKey={['1', '2']}>
+            <div className="mainConst">
+                <Collapse className="collapse" defaultActiveKey={['1', '2']}>
                     <Panel header="Settings" key="1">
-                        <Input
-                            placeholder="Module name"
-                            onChange={(e) => this.setState({moduleName: e.target.value})}
-                        />
+                        <div className="settingsContainer">
+                            <Input
+                                placeholder="Module name"
+                                onChange={(e) => this.setState({moduleName: e.target.value})}
+                            />
 
-                        <div className="radioCont">
-                            <RadioGroup value={generatingComponent} onChange={(e) => this.setState({generatingComponent: e.target.value})}>
-                                <Radio value={COMPONENT_TYPES.poorPage}>Poor page</Radio>
-                                <Radio value={COMPONENT_TYPES.tablePage}>Table page</Radio>
-                                <Radio value={COMPONENT_TYPES.modal}>Modal</Radio>
-                            </RadioGroup>
+                            <TextArea
+                                placeholder="Module description(comment)"
+                                rows={4}
+                                className="textArea"
+                                onChange={(e) => this.setState({moduleDescription: e.target.value})}
+                            />
+
+                            <div className="radioCont">
+                                Module type:
+                                <br /> 
+                                <RadioGroup value={generatingComponent} onChange={(e) => this.setState({generatingComponent: e.target.value})}>
+                                    <Radio value={COMPONENT_TYPES.poorPage}>Poor page</Radio>
+                                    <Radio value={COMPONENT_TYPES.tablePage}>Table page</Radio>
+                                    <Radio value={COMPONENT_TYPES.modal}>Modal</Radio>
+                                </RadioGroup>
+                            </div>
                         </div>
                     </Panel>
                     <Panel header="Create actions" key="2">
-                        <Tabs tabPosition="left">
-                            <TabPane tab="Actions generator" key="1">
-                                <InputArray
-                                    actionsChanged={(actions) => {
-                                        this.setState({ actions });
-                                    }}
-                                />
-                            </TabPane>
-                            <TabPane tab="Json viewer" key="2">
-                                <div className="jsonContainer">
-                                    <ReactJson
-                                        name={false}
-                                        collapsed={false}
-                                        displayObjectSize={false}
-                                        displayDataTypes={false}
-                                        collapseStringsAfterLength={true}
-                                        src={this.state}
+                        <div className="settingsContainer">
+                            <Tabs className="tabs" tabPosition="left">
+                                <TabPane tab="Actions generator" key="1">
+                                    <InputArray
+                                        actionsChanged={(actions) => {
+                                            this.setState({ actions });
+                                        }}
                                     />
-                                </div>
-                            </TabPane>
-                        </Tabs>
-                        
+                                </TabPane>
+                                <TabPane tab="Json viewer" key="2">
+                                    <div className="jsonContainer">
+                                        <ReactJson
+                                            name={false}
+                                            collapsed={false}
+                                            displayObjectSize={false}
+                                            displayDataTypes={false}
+                                            collapseStringsAfterLength={true}
+                                            src={this.state}
+                                        />
+                                    </div>
+                                </TabPane>
+                            </Tabs>
+                        </div>
                     </Panel>
                 </Collapse>
 
