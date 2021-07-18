@@ -34,11 +34,11 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    ${_.map(fetchActions, ({constants}) => constants.fetch).join(",\n")}
+    ${_.map(fetchActions, ({constants}) => constants.fetch).join(",\n\t")}
 
-    ${_.map(fetchActions, ({actionCreators}) => actionCreators.fetchSuccess).join(",\n")}
+    ${_.map(fetchActions, ({actionCreators}) => actionCreators.fetchSuccess).join(",\n\t")}
 
-    ${_.map(setActions, ({actionCreators}) => actionCreators.set).join(",\n")}
+    ${_.map(setActions, ({actionCreators}) => actionCreators.set).join(",\n\t")}
 } from './duck';
         `
         return result;
