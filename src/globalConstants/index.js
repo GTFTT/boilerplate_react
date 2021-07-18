@@ -7,6 +7,20 @@ const ACTION_TYPES = {
     set: "set",
 }
 
+/**
+ * Sometimes you have to specify default init values, those are strings.
+ * Each of them represent real JS value which often used as default initializing value.
+ */
+const DEF_INIT_VALUES = {
+    undefinedValue: 'undefined',
+    nullValue: 'null',
+    emptyString: `\"\"`,
+    zero: '0',
+    emptyObject: '{}',
+    emptyArray: '[]',
+}
+
 module.exports = {
     ACTION_TYPES,
+    DEF_INIT_VALUES,
 };

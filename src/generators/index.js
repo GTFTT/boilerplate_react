@@ -90,15 +90,14 @@ function enrichActions(actions) {
  *  const actions = [
  *      {
  *          actionName: 'vehicles',
- *          actionType: ACTION_TYPES.fetch
- *      },
- *      {
- *          actionName: 'recommendations',
- *          actionType: ACTION_TYPES.fetch
+ *          actionType: ACTION_TYPES.fetch,
+ *          actionFetchURL: undefined,
+ *          actionInitValue: 'undefined',
  *      },
  *      {
  *          actionName: 'vehiclesFetching',
- *          actionType: ACTION_TYPES.set
+ *          actionType: ACTION_TYPES.set,
+ *          actionInitValue: 'undefined',
  *      },
  *  ];
  */

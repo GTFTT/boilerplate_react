@@ -4,10 +4,10 @@ import { Input, List, Button, Select } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
-import { constantCase } from 'change-case';
+import { constantCase, sentenceCase } from 'change-case';
 
 //proj
-import { ACTION_TYPES } from 'globalConstants';
+import { ACTION_TYPES, DEF_INIT_VALUES } from 'globalConstants';
 
 //own
 import './styles.css';
@@ -48,6 +48,8 @@ export default class InputArray extends React.Component {
                 {
                     actionName: "vehicles",
                     actionType: ACTION_TYPES.fetch,
+                    actionFetchURL: undefined,
+                    actionInitValue: DEF_INIT_VALUES.undefinedValue,
                     key: v4(),
                 }
             ]
@@ -63,12 +65,63 @@ export default class InputArray extends React.Component {
     }
 
     /**
+     * Each action has its additional fields we have to render
+     * @param {*} params.key - action identifier
+     * @param {*} params.actionType - type of an action
+     */
+    _renderAdditionalFields = ({key, actionType, actionFetchURL, actionInitValue}) => {
+        switch (actionType) {
+            case ACTION_TYPES.fetch:
+                return (
+                    <div>
+                        <Input
+                            value={actionFetchURL}
+                            className="input"
+                            placeholder="Fetching URL"
+                            onChange={(e) => this.onChangeInputValue(key, {actionFetchURL: e.target.value})}
+                        />
+                        <Select
+                            value={actionInitValue}
+                            className="select"
+                            placeholder="Init value"
+                            onChange={(initValue) => this.onChangeInputValue(key, {actionInitValue: initValue})}
+                        >
+                            {_.map(DEF_INIT_VALUES, (value, key) => {
+                                return (
+                                    <Option value={value}>{sentenceCase(key)}</Option>
+                                )
+                            })}
+                        </Select>
+                    </div>
+                )
+            case ACTION_TYPES.set:
+                return (
+                    <Select
+                        value={actionInitValue}
+                        className="select"
+                        placeholder="Select init value"
+                        onChange={(initValue) => this.onChangeInputValue(key, {actionInitValue: initValue})}
+                    >
+                        {_.map(DEF_INIT_VALUES, (value, key) => {
+                            return (
+                                <Option value={value}>{sentenceCase(key)}</Option>
+                            )
+                        })}
+                    </Select>
+                )
+            default:
+                return undefined;
+        }
+
+    }
+
+    /**
      * When changed input value of an action.
      * Values will be replaced only if they are provided
      * @param {*} key - uuid
      * @param {*} params - action
      */
-    onChangeInputValue = (key, {actionName, actionType}) => {
+    onChangeInputValue = (key, {actionName, actionType, actionInitValue, actionFetchURL}) => {
         const actions = _.get(this, 'state.actions');
 
         const newInputValues = _.map(actions, (item) => {
@@ -77,6 +130,8 @@ export default class InputArray extends React.Component {
                     ...item,
                     actionName: actionName? actionName: item.actionName,
                     actionType: actionType? actionType: item.actionType,
+                    actionInitValue: actionInitValue? actionInitValue: item.actionInitValue,
+                    actionFetchURL: actionFetchURL? actionFetchURL: item.actionFetchURL,
                 }
             else
                 return item;
@@ -108,8 +163,8 @@ export default class InputArray extends React.Component {
                         >
                             <div className={"item"}>
                                 <Input
-                                    className="input"
                                     value={_.get(item, 'actionName')}
+                                    className="input"
                                     onChange={(e) => this.onChangeInputValue(item.key, {actionName: e.target.value})}
                                 />
 
@@ -121,6 +176,10 @@ export default class InputArray extends React.Component {
                                     <Option value={ACTION_TYPES.fetch}>{constantCase(ACTION_TYPES.fetch)}</Option>
                                     <Option value={ACTION_TYPES.set}>{constantCase(ACTION_TYPES.set)}</Option>
                                 </Select>
+
+                                <div>
+                                    {this._renderAdditionalFields(item)}
+                                </div>
                             </div>
                         </Item>
                     )}

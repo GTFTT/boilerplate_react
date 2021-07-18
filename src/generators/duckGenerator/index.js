@@ -30,17 +30,17 @@ function generateConstant({ actionType, constants }) {
 }
 
 /** Reducer snippet is a line that contains variable name */
-function generateReducerInitStateSnippet({ actionName, actionType, valueNames }) {
+function generateReducerInitStateSnippet({ actionInitValue, actionType, valueNames }) {
     let res = "";
 
     switch (actionType) {
         case ACTION_TYPES.fetch:
-            res += `\t${valueNames.value},\n`;
-            res += `\t${valueNames.fetchingValue},\n\n`;
+            res += `\t${valueNames.value}: ${actionInitValue},\n`;
+            res += `\t${valueNames.fetchingValue}: false,\n\n`;
             break;
 
         case ACTION_TYPES.set:
-            res += `\t${valueNames.value},\n`;
+            res += `\t${valueNames.value}: ${actionInitValue},\n`;
             break;    
     }
 
