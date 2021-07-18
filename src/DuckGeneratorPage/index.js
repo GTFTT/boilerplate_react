@@ -1,19 +1,21 @@
 //vendor
 import React from 'react';
-import { Collapse, Input, Button, notification, Tabs } from 'antd';
+import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
 
 //proj
 import generators from "generators";
 import { downloadTxtFile } from '../utils';
+import { COMPONENT_TYPES } from 'globalConstants';
 
 //own
 import InputArray from './InputArray';
 import "./styles.css";
 
 const Panel = Collapse.Panel;
-const TabPane = Tabs.TabPane
+const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 
 export default class DuckGeneratorPage extends React.Component {
     constructor(props) {
@@ -21,6 +23,7 @@ export default class DuckGeneratorPage extends React.Component {
 
         this.state = {
             moduleName: undefined,
+            generatingComponent: COMPONENT_TYPES.poorPage,
             actions: [],
         };
     }
@@ -49,16 +52,24 @@ export default class DuckGeneratorPage extends React.Component {
 
     render() {
 
-        const { actions } = this.state;
+        const { actions, generatingComponent } = this.state;
 
         return (
             <div>
                 <Collapse defaultActiveKey={['1', '2']}>
-                    <Panel header="Enter module name" key="1">
+                    <Panel header="Settings" key="1">
                         <Input
                             placeholder="Module name"
                             onChange={(e) => this.setState({moduleName: e.target.value})}
                         />
+
+                        <div className="radioCont">
+                            <RadioGroup value={generatingComponent} onChange={(e) => this.setState({generatingComponent: e.target.value})}>
+                                <Radio value={COMPONENT_TYPES.poorPage}>Poor page</Radio>
+                                <Radio value={COMPONENT_TYPES.tablePage}>Table page</Radio>
+                                <Radio value={COMPONENT_TYPES.modal}>Modal</Radio>
+                            </RadioGroup>
+                        </div>
                     </Panel>
                     <Panel header="Create actions" key="2">
                         <Tabs tabPosition="left">
@@ -77,7 +88,7 @@ export default class DuckGeneratorPage extends React.Component {
                                         displayObjectSize={false}
                                         displayDataTypes={false}
                                         collapseStringsAfterLength={true}
-                                        src={actions}
+                                        src={this.state}
                                     />
                                 </div>
                             </TabPane>
