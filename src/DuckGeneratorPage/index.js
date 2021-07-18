@@ -77,7 +77,8 @@ export default class DuckGeneratorPage extends React.Component {
                         displayObjectSize={false}
                         displayDataTypes={false}
                         collapseStringsAfterLength={true}
-                        style={{fontSize: '0.5em', width: '100%'}} src={actions} />
+                        src={actions}
+                    />
                 </div>
             </div>
         );
