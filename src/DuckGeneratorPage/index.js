@@ -1,6 +1,6 @@
 //vendor
 import React from 'react';
-import { Collapse, Input, Button, notification } from 'antd';
+import { Collapse, Input, Button, notification, Tabs } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
 
@@ -13,6 +13,7 @@ import InputArray from './InputArray';
 import "./styles.css";
 
 const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane
 
 export default class DuckGeneratorPage extends React.Component {
     constructor(props) {
@@ -60,26 +61,32 @@ export default class DuckGeneratorPage extends React.Component {
                         />
                     </Panel>
                     <Panel header="Create actions" key="2">
-                        <InputArray
-                            actionsChanged={(actions) => {
-                                this.setState({ actions });
-                            }}
-                        />
+                        <Tabs tabPosition="left">
+                            <TabPane tab="Actions generator" key="1">
+                                <InputArray
+                                    actionsChanged={(actions) => {
+                                        this.setState({ actions });
+                                    }}
+                                />
+                            </TabPane>
+                            <TabPane tab="Json viewer" key="2">
+                                <div className="jsonContainer">
+                                    <ReactJson
+                                        name={false}
+                                        collapsed={false}
+                                        displayObjectSize={false}
+                                        displayDataTypes={false}
+                                        collapseStringsAfterLength={true}
+                                        src={actions}
+                                    />
+                                </div>
+                            </TabPane>
+                        </Tabs>
+                        
                     </Panel>
                 </Collapse>
 
                 <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate file</Button>
-
-                <div className="jsonContainer">
-                    <ReactJson
-                        name={false}
-                        collapsed={false}
-                        displayObjectSize={false}
-                        displayDataTypes={false}
-                        collapseStringsAfterLength={true}
-                        src={actions}
-                    />
-                </div>
             </div>
         );
     }
