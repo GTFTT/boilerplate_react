@@ -83,6 +83,7 @@ import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
                 enriched.actionCreators = {
                     poorSagaAction: camelCase(`${action.actionName}`),
                 }
+                break;
 
             case ACTION_TYPES.poorReducerAction:
                 enriched.constants = {
