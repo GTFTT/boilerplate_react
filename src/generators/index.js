@@ -32,7 +32,7 @@ import pageGenerator from './pageGenerator';
  */
 export default (generationObject) => {
     const enrichedGenerationObject = enricher(generationObject);
-    const {moduleName, pageName, generatingComponent, actions} = enrichedGenerationObject;
+    const { generatingComponent } = enrichedGenerationObject;
 
     console.log("enrichedGenerationObject: ", enrichedGenerationObject);
     
@@ -44,7 +44,7 @@ export default (generationObject) => {
             generateReducer,
             generateSelectors,
             generateActionCreators,
-        } = duckGenerator({moduleName, actions});
+        } = duckGenerator(enrichedGenerationObject);
 
         // Data which will write in a file. 
         let data = ""
@@ -63,7 +63,7 @@ export default (generationObject) => {
             generateImports,
             generateSagas,
             generateCommonSaga,
-        } = sagaGenerator({moduleName, actions});
+        } = sagaGenerator(enrichedGenerationObject);
 
         // Data which will write in a file. 
         let data = ""
@@ -77,7 +77,7 @@ export default (generationObject) => {
     function generatePage() {
         const {
             generatePoorPage,
-        } = pageGenerator({pageName, actions})
+        } = pageGenerator(enrichedGenerationObject)
 
         switch (generatingComponent) {
             case COMPONENT_TYPES.poorPage:

@@ -100,7 +100,11 @@ export default ({pageName, moduleDescription, actions}) => {
     const generateClass = () => {
         let res = lines([
             `/**`,
-            moduleDescription && _.map(moduleDescription.split('\n'), (str) => ` * ${str}`)
+            ...(
+                moduleDescription
+                    ? _.map(moduleDescription.split('\n'), (str) => ` * ${str}`)
+                    : []
+            ),
             ` */`,
             `@injectIntl`,
             `@connect(mapStateToProps, mapDispatchToProps)`,
