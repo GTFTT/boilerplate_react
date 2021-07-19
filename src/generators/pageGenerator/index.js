@@ -1,7 +1,7 @@
 
 //own
 import { lines } from "utils";
-import poorPageGenerator from "./poorPageGenerator"
+import poorPageGenerator from "./poorPageGenerator/poorPageGenerator"
 
 export default ({pageName, moduleDescription, generatingComponent, actions}) => {
 
