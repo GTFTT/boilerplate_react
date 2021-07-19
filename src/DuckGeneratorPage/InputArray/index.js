@@ -106,8 +106,6 @@ export default class InputArray extends React.Component {
                     </div>
                 )
             case ACTION_TYPES.set:
-            case ACTION_TYPES.poorSagaAction:
-            case ACTION_TYPES.poorReducerAction:
                 return (
                     <Select
                         value={actionInitValue}
