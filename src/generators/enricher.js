@@ -1,5 +1,5 @@
 //vendor
-import { constantCase, camelCase, capitalCase } from 'change-case'; //For converting different types of variables(camelCase, snake case, etc.)
+import { constantCase, camelCase, capitalCase, pascalCase } from 'change-case'; //For converting different types of variables(camelCase, snake case, etc.)
 import _ from 'lodash';
 
 //proj
@@ -108,8 +108,8 @@ export default (generationObject) => {
     const { moduleName, actions } = generationObject;
 
     const moduleNameCamelCase = camelCase(moduleName);
-    const pageName = capitalCase(`${moduleName} page`);
-    const modalName = capitalCase(`${moduleName} page`);
+    const pageName = pascalCase(`${moduleName} page`);
+    const modalName = pascalCase(`${moduleName} modal`);
     const enrichedActions = enrichActions(actions);
 
     return {

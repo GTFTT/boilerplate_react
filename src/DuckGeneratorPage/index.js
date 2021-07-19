@@ -8,6 +8,7 @@ import ReactJson from 'react-json-view'
 import generators from "generators";
 import { downloadTxtFile } from '../utils';
 import { COMPONENT_TYPES } from 'globalConstants';
+import enricher from 'generators/enricher';
 
 //own
 import InputArray from './InputArray';
@@ -23,7 +24,7 @@ export default class DuckGeneratorPage extends React.Component {
         super(props);
 
         this.state = {
-            moduleName: undefined,
+            moduleName: "test",
             moduleDescription: undefined,
             generatingComponent: COMPONENT_TYPES.poorPage,
             actions: [],
@@ -55,7 +56,7 @@ export default class DuckGeneratorPage extends React.Component {
 
     render() {
 
-        const { actions, generatingComponent } = this.state;
+        const {actions, moduleName, generatingComponent, moduleDescription} = this.state;
 
         return (
             <div className="mainConst">
@@ -64,6 +65,7 @@ export default class DuckGeneratorPage extends React.Component {
                         <div className="settingsContainer">
                             <Input
                                 placeholder="Module name"
+                                value={moduleName}
                                 onChange={(e) => this.setState({moduleName: e.target.value})}
                             />
 
@@ -95,15 +97,25 @@ export default class DuckGeneratorPage extends React.Component {
                                         }}
                                     />
                                 </TabPane>
-                                <TabPane tab="Json viewer" key="2">
+                                <TabPane tab="Input" key="2">
                                     <div className="jsonContainer">
                                         <ReactJson
                                             name={false}
-                                            collapsed={false}
                                             displayObjectSize={false}
                                             displayDataTypes={false}
                                             collapseStringsAfterLength={true}
                                             src={this.state}
+                                        />
+                                    </div>
+                                </TabPane>
+                                <TabPane tab="Generation object" key="3">
+                                    <div className="jsonContainer">
+                                        <ReactJson
+                                            name={false}
+                                            displayObjectSize={false}
+                                            displayDataTypes={false}
+                                            collapseStringsAfterLength={true}
+                                            src={enricher({actions, moduleName, generatingComponent, moduleDescription})}
                                         />
                                     </div>
                                 </TabPane>
