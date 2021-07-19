@@ -55,7 +55,30 @@ export default ({pageName, moduleDescription, actions}) => {
         return res;
     }
 
+    const generateMapStateToProps = () => {
+        let res = lines([
+            `const mapStateToProps = state => ({`,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
+                ({valueNames, selectors}) => lines([
+                    `\t${valueNames.value}: ${selectors.value}(state),`,
+                    `\t${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
+                    ``,
+                ])
+            ),
+            ``,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
+                ({valueNames, selectors}) => `\t${valueNames.value}: ${selectors.value}(state),`
+            ), 
+            `});`,
+        ]);
+
+        return res;
+    }
+
     return {
         generateImports,
+        generateMapStateToProps,
     };
 }
