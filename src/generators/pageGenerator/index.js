@@ -8,12 +8,15 @@ export default ({pageName, moduleDescription, generatingComponent, actions}) => 
     const generatePoorPage = () => {
         const {
             generateImports,
-            generateMapStateToProps
+            generateMapStateToProps,
+            generateMapDispatchToProps,
         } = poorPageGenerator({actions});
 
         return lines([
             generateImports(),
-            generateMapStateToProps()
+            generateMapStateToProps(),
+            ``,
+            generateMapDispatchToProps(),
         ]);
     };
 

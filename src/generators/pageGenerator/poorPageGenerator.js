@@ -77,8 +77,29 @@ export default ({pageName, moduleDescription, actions}) => {
         return res;
     }
 
+    const generateMapDispatchToProps = () => {
+        let res = lines([
+            `const mapDispatchToProps = state => ({`,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
+                ({valueNames, actionCreators}) => lines([
+                    `\t${actionCreators.fetch},`,
+                ])
+            ),
+            ``,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
+                ({valueNames, actionCreators}) => `\t${actionCreators.set},`
+            ), 
+            `});`,
+        ]);
+
+        return res;
+    }
+
     return {
         generateImports,
         generateMapStateToProps,
+        generateMapDispatchToProps,
     };
 }
