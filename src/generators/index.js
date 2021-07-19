@@ -1,13 +1,14 @@
 //vendor
-import { constantCase, camelCase } from 'change-case'; //For convering different types of variables(camelcase, snake case, etc.)
+import { constantCase, camelCase, capitalCase } from 'change-case'; //For convering different types of variables(camelcase, snake case, etc.)
 import _ from 'lodash';
 
 //proj
-import { ACTION_TYPES } from 'globalConstants';
+import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
 
 //own
 import duckGenerator from './duckGenerator';
 import sagaGenerator from './sagaGenerator';
+import pageGenerator from './pageGenerator';
 
 /**
  * Actions enriching - generating more fields that can be used later
@@ -124,9 +125,11 @@ function enrichActions(actions) {
  *      },
  *  ];
  */
-export default ({moduleName, actions}) => {
+export default ({moduleName, generatingComponent, actions}) => {
 
+    //TODO enrichers have to be in a separate file
     const moduleNameCamelCase = camelCase(moduleName);
+    const pageName = capitalCase(`${moduleName} page`);
     const enrichedActions = enrichActions(actions);
 
     console.log("enrichedActions: ", enrichedActions);
@@ -169,8 +172,23 @@ export default ({moduleName, actions}) => {
         return data;
     }
 
+    function generatePage() {
+        const {
+            generatePoorPage,
+        } = pageGenerator({pageName, actions: enrichedActions})
+
+        switch (generatingComponent) {
+            case COMPONENT_TYPES.poorPage:
+                return generatePoorPage();
+        
+            default:
+                return undefined;
+        };
+    }
+
     return {
         generateDuckFile,
         generateSagaFile,
+        generatePage,
     };
 }

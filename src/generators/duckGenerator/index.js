@@ -1,15 +1,9 @@
 import { constantCase, camelCase } from 'change-case'; //For convering different types of variables(camelcase, snake case, etc.)
 import _ from 'lodash';
 
+//proj
 import { ACTION_TYPES } from 'globalConstants';
-
-/**
- * Geerate lines with new line at the end of each piece of text
- * @param {*} text - array of strings
- */
-function lines(text) {
-    return _.compact(text).join("\n");
-}
+import { lines } from 'utils';
 
 function generateConstant({ actionType, constants }) {
     let result = "";
@@ -155,9 +149,9 @@ function generateActionSnippet({ actionType, actionName, actionCreators, constan
 }
 
 /**
- * Module pattern is used here to generate data;
+ * Module pattern is used here to generate data. This generator is used for creating duck files.
  * 
- * @param { String } moduleName - name of the module you wnat to create
+ * @param { String } moduleName - name of the module you want to create
  * @param { String } actions - actions, will be used to generate duck actions, constants and reducers
  * @param { String } actions.actionName - 
  * @param { String } actions.actionType - 

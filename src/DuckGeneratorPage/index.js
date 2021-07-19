@@ -31,17 +31,18 @@ export default class DuckGeneratorPage extends React.Component {
     }
 
     onGenerateFiles = () => {
-        const {moduleName, actions} = this.state;
+        const {moduleName, generatingComponent, moduleDescription, actions} = this.state;
 
         if(!moduleName || _.isEmpty(actions)) {
             notification.error({message: "Not enough information provided!"});
             return;
         }
 
-        const { generateDuckFile, generateSagaFile } = generators({actions, moduleName});
+        const { generateDuckFile, generateSagaFile, generatePage } = generators({actions, moduleName, generatingComponent, moduleDescription});
         
         downloadTxtFile(generateDuckFile(), "duck.txt");
         downloadTxtFile(generateSagaFile(), "saga.txt");
+        downloadTxtFile(generatePage(), "page.txt");
 
         notification.info({
             message: (
@@ -111,7 +112,7 @@ export default class DuckGeneratorPage extends React.Component {
                     </Panel>
                 </Collapse>
 
-                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate file</Button>
+                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate</Button>
             </div>
         );
     }
