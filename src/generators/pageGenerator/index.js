@@ -10,13 +10,16 @@ export default ({pageName, moduleDescription, generatingComponent, actions}) => 
             generateImports,
             generateMapStateToProps,
             generateMapDispatchToProps,
-        } = poorPageGenerator({actions});
+            generateClass,
+        } = poorPageGenerator({moduleDescription, actions});
 
         return lines([
             generateImports(),
             generateMapStateToProps(),
             ``,
             generateMapDispatchToProps(),
+            ``,
+            generateClass(),
         ]);
     };
 

@@ -97,9 +97,54 @@ export default ({pageName, moduleDescription, actions}) => {
         return res;
     }
 
+    const generateClass = () => {
+        let res = lines([
+            `/**`,
+            moduleDescription && _.map(moduleDescription.split('\n'), (str) => ` * ${str}`)
+            ` */`,
+            `@injectIntl`,
+            `@connect(mapStateToProps, mapDispatchToProps)`,
+            `export default class ${pageName} extends Component {`,
+            `\tconstructor(props) {`,
+            `\t\tsuper(props);`,
+            `\t}`,
+            ``,
+            `\trender() {`,
+            `\t\tconst {`,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
+                ({valueNames, selectors}) => lines([
+                    `\t\t\t${valueNames.value},`,
+                    `\t\t\t${valueNames.fetchingValue},`,
+                    ``,
+                ])
+            ),
+            ``,
+            ..._.map(
+                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
+                ({valueNames, selectors}) => `\t\t\t${valueNames.value},`
+            ),
+            `\t\t} = this.props;`,
+            ``,
+            `\t\treturn (`,
+            `\t\t\t<div>`,
+            `\t\t\t\t<Layout`,
+            `\t\t\t\t\ttitle={ <FormattedMessage id={ 'generate.generate' } /> }`,
+            `\t\t\t\t\tcontrols={}`,
+            `\t\t\t\t></Layout>`,
+            `\t\t\t</div>`,
+            `\t\t)`,
+            `\t}`,
+            `}`,
+        ]);
+
+        return res;
+    }
+
     return {
         generateImports,
         generateMapStateToProps,
         generateMapDispatchToProps,
+        generateClass,
     };
 }
