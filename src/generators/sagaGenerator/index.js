@@ -2,6 +2,7 @@ import { constantCase, camelCase } from 'change-case'; //For convering different
 import _ from 'lodash';
 
 import { ACTION_TYPES } from 'globalConstants';
+import { lines } from "utils";
 
 /**
  * Module pattern is used here to generate data;
@@ -18,31 +19,32 @@ export default ({moduleName, actions}) => {
     const setActions = _.filter(actions, (obj) => obj.actionType == ACTION_TYPES.set)
 
     function generateImports() {
-        let result = 
-        `
-// vendor
-import { call, put, all, take, select } from 'redux-saga/effects';
-import nprogress from 'nprogress';
-import _ from 'lodash';
-import moment from 'moment';
-import { notification } from 'antd';
-import history from 'store/history';
-
-//proj
-import book from 'routes/book';
-import { emitError } from 'core/ui/duck';
-import { fetchAPI } from 'utils';
-
-// own
-import {
-    ${_.map(fetchActions, ({constants}) => constants.fetch).join(",\n\t")}
-    ${_.map(poorSagaActions, ({constants}) => constants.poorSagaAction).join(",\n\t")}
-
-    ${_.map(fetchActions, ({actionCreators}) => actionCreators.fetchSuccess).join(",\n\t")}
-
-    ${_.map(setActions, ({actionCreators}) => actionCreators.set).join(",\n\t")}
-} from './duck';
-        `
+        let result = lines([
+            `// vendor`,
+            `import { call, put, all, take, select } from 'redux-saga/effects';`,
+            `import nprogress from 'nprogress';`,
+            `import _ from 'lodash';`,
+            `import moment from 'moment';`,
+            `import { notification } from 'antd';`,
+            ``,
+            `//proj`,
+            `import history from 'store/history';`,
+            `import book from 'routes/book';`,
+            `import { emitError } from 'core/ui/duck';`,
+            `import { fetchAPI } from 'utils';`,
+            ``,
+            `// own`,
+            `import {`,
+            ..._.map(fetchActions, ({constants}) => `\t${constants.fetch},`),
+            ``,
+            ..._.map(fetchActions, ({constants}) => `\t${constants.fetchSuccess},`),
+            ``,
+            ..._.map(poorSagaActions, ({constants}) => `\t${constants.poorSagaAction},`),
+            ``,
+            ..._.map(setActions, ({constants}) => `\t${constants.set},`),
+            `} from './duck';`,
+            `\n`,
+        ]);
         return result;
     }
 
@@ -51,63 +53,63 @@ import {
 
             switch (actionType) {
                 case ACTION_TYPES.fetch:
-                    return `
-export function* ${sagas.sagaName}() {
-    while (true) {
-        try {
-            yield take(${constants.fetch});
-
-            yield put(${actionCreators.setFetching}(true));
-
-            const ${propertyName} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);
-
-            yield put(${actionCreators.fetchSuccess}({${propertyName}}));
-
-        } catch (error) {
-            yield put(emitError(error));
-        } finally {
-            yield put(${actionCreators.setFetching}(false));
-        }
-    }
-}\n
-                    `
+                    return lines([
+                        `export function* ${sagas.sagaName}() {`,
+                        `\twhile (true) {`,
+                        `\t\ttry {`,
+                        `\t\t\tyield take(${constants.fetch});`,
+                        ``,
+                        `\t\t\tyield put(${actionCreators.setFetching}(true));`,
+                        ``,
+                        `\t\t\tconst ${propertyName} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);`,
+                        ``,
+                        `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}}));`,
+                        `\t\t} catch (error) {`,
+                        `\t\t\tyield put(emitError(error));`,
+                        `\t\t} finally {`,
+                        `\t\t\tyield put(${actionCreators.setFetching}(false));`,
+                        `\t\t}`,
+                        `\t}`,
+                        `}`,
+                        `\n`
+                    ]);
                 case ACTION_TYPES.poorSagaAction:
-                    return `
-export function* ${sagas.sagaName}() {
-    while (true) {
-        try {
-            yield take(${constants.poorSagaAction});
-        } catch (error) {
-            yield put(emitError(error));
-        }
-    }
-}\n
-                    `
+                    return lines([
+                        `export function* ${sagas.sagaName}() {`,
+                        `\twhile (true) {`,
+                        `\t\ttry {`,
+                        `\t\t\tyield take(${constants.poorSagaAction});`,
+                        `\t\t} catch (error) {`,
+                        `\t\t\tyield put(emitError(error));`,
+                        `\t\t}`,
+                        `\t}`,
+                        `}\n`,
+                    ]);
             }
             
-        })
+        }).join("");
+
         return result;
     }
 
     function generateCommonSaga() {
-        let result = 
+        let result = lines([
+            `export function* saga() {`,
+            `\tyield all([`,
 
-        `
-export function* saga() {
-    yield all([
-        ${
-            _.map(actions, ({actionType, sagas}) => {
+            ..._.map(actions, ({actionType, sagas}) => {
                 switch (actionType) {
                     case ACTION_TYPES.fetch:
                     case ACTION_TYPES.poorSagaAction:
-                        return `call(${sagas.sagaName}),\n\t`;
+                        return `\t\tcall(${sagas.sagaName}),`;
                 }
                 
-            })
-        }
-    ]);
-}
-        `
+            }),
+
+            `\t]);`,
+            `}`,
+        ]);
+
         return result;
     }
 
