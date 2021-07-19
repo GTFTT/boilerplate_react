@@ -3,11 +3,12 @@ import React from 'react';
 import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
+import { pascalCase } from 'change-case';
 
 //proj
 import generators from "generators";
-import { downloadTxtFile } from '../utils';
-import { COMPONENT_TYPES } from 'globalConstants';
+import { downloadZipFile } from 'utils';
+import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/enricher';
 
 //own
@@ -40,10 +41,60 @@ export default class DuckGeneratorPage extends React.Component {
         }
 
         const { generateDuckFile, generateSagaFile, generatePage } = generators({actions, moduleName, generatingComponent, moduleDescription});
+
+        let componentName = "";
+        switch (generatingComponent) {
+            case COMPONENT_TYPES.poorPage:
+            case COMPONENT_TYPES.tablePage:
+                componentName = pascalCase(`${moduleName} page`)
+                break;
+            case COMPONENT_TYPES.modal:
+                componentName = pascalCase(`${moduleName} modal`)
+                break;
         
-        downloadTxtFile(generateDuckFile(), "duck.txt");
-        downloadTxtFile(generateSagaFile(), "saga.txt");
-        downloadTxtFile(generatePage(), "page.txt");
+            default:
+                componentName = "UNKNOWN"
+                break;
+        }
+
+        const fileStructure = [
+            {
+                type: TYPES_OF_FILES.directory,
+                name: `${componentName}`,
+                content: [
+                    {
+                        type: TYPES_OF_FILES.directory,
+                        name: 'redux',
+                        content: [
+                            {
+                                type: TYPES_OF_FILES.file,
+                                name: 'duck',
+                                extension: '.js',
+                                content: generateDuckFile(),
+                            },
+                            {
+                                type: TYPES_OF_FILES.file,
+                                name: 'saga',
+                                extension: '.js',
+                                content: generateSagaFile(),
+                            },
+                        ]
+                    },
+                    {
+                        type: TYPES_OF_FILES.file,
+                        name: 'index',
+                        extension: '.js',
+                        content: generatePage(),
+                    },
+                ]
+            }
+        ];
+
+        downloadZipFile(fileStructure);
+        
+        // downloadTxtFile(generateDuckFile(), "duck.txt");
+        // downloadTxtFile(generateSagaFile(), "saga.txt");
+        // downloadTxtFile(generatePage(), "page.txt");
 
         notification.info({
             message: (

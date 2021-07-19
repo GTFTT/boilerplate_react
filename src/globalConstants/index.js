@@ -31,8 +31,14 @@ const COMPONENT_TYPES = Object.freeze({
     modal: "modal",
 });
 
+const TYPES_OF_FILES = Object.freeze({
+    file: 'file',
+    directory: 'directory',
+});
+
 module.exports = {
     ACTION_TYPES,
     DEF_INIT_VALUES,
     COMPONENT_TYPES,
+    TYPES_OF_FILES
 };
