@@ -34,8 +34,6 @@ export default (generationObject) => {
     const enrichedGenerationObject = enricher(generationObject);
     const { generatingComponent } = enrichedGenerationObject;
 
-    console.log("enrichedGenerationObject: ", enrichedGenerationObject);
-    
     function generateDuckFile() {
         const {
             generateHeader,
