@@ -40,61 +40,132 @@ export default class DuckGeneratorPage extends React.Component {
             return;
         }
 
-        const { generateDuckFile, generateSagaFile, generatePage } = generators({actions, moduleName, generatingComponent, moduleDescription});
+        const { generateDuckFile, generateSagaFile, generatePages } = generators({actions, moduleName, generatingComponent, moduleDescription});
+
+        let fileStructure = undefined;
+        const pages = generatePages();
+        const enrichedValues = enricher({actions, moduleName, generatingComponent, moduleDescription});
 
         let componentName = "";
         switch (generatingComponent) {
             case COMPONENT_TYPES.poorPage:
-            case COMPONENT_TYPES.tablePage:
-                componentName = pascalCase(`${moduleName} page`)
-                break;
-            case COMPONENT_TYPES.modal:
-                componentName = pascalCase(`${moduleName} modal`)
-                break;
-        
-            default:
-                componentName = "UNKNOWN"
-                break;
-        }
-
-        const fileStructure = [
-            {
-                type: TYPES_OF_FILES.directory,
-                name: `${componentName}`,
-                content: [
+                componentName = enrichedValues.pageName;
+                fileStructure = [
                     {
                         type: TYPES_OF_FILES.directory,
-                        name: 'redux',
+                        name: `${componentName}`,
                         content: [
                             {
-                                type: TYPES_OF_FILES.file,
-                                name: 'duck',
-                                extension: '.js',
-                                content: generateDuckFile(),
+                                type: TYPES_OF_FILES.directory,
+                                name: 'redux',
+                                content: [
+                                    {
+                                        type: TYPES_OF_FILES.file,
+                                        name: 'duck',
+                                        extension: '.js',
+                                        content: generateDuckFile(),
+                                    },
+                                    {
+                                        type: TYPES_OF_FILES.file,
+                                        name: 'saga',
+                                        extension: '.js',
+                                        content: generateSagaFile(),
+                                    },
+                                ]
                             },
                             {
                                 type: TYPES_OF_FILES.file,
-                                name: 'saga',
+                                name: 'index',
                                 extension: '.js',
-                                content: generateSagaFile(),
+                                content: pages.poorPage,
                             },
                         ]
-                    },
+                    }
+                ];
+                break;
+            case COMPONENT_TYPES.tablePage:
+                componentName = enrichedValues.pageName;
+                fileStructure = [
                     {
-                        type: TYPES_OF_FILES.file,
-                        name: 'index',
-                        extension: '.js',
-                        content: generatePage(),
-                    },
-                ]
-            }
-        ];
-
-        downloadZipFile(fileStructure);
+                        type: TYPES_OF_FILES.directory,
+                        name: `${componentName}`,
+                        content: [
+                            {
+                                type: TYPES_OF_FILES.directory,
+                                name: 'components',
+                                content: [
+                                    {
+                                        type: TYPES_OF_FILES.directory,
+                                        name: 'tables',
+                                        content: [
+                                            {
+                                                type: TYPES_OF_FILES.directory,
+                                                name: enrichedValues.pageTableName,
+                                                content: [
+                                                    {
+                                                        type: TYPES_OF_FILES.file,
+                                                        name: 'index',
+                                                        extension: '.js',
+                                                        content: pages.table,
+                                                    },
+                                                    {
+                                                        type: TYPES_OF_FILES.file,
+                                                        name: 'styles',
+                                                        extension: '.m.css',
+                                                        content: pages.tableStyles,
+                                                    },
+                                                    {
+                                                        type: TYPES_OF_FILES.file,
+                                                        name: 'config',
+                                                        extension: '.js',
+                                                        content: pages.tableConfig,
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                type: TYPES_OF_FILES.file,
+                                                name: 'index',
+                                                extension: '.js',
+                                                content: '//Import and export all',
+                                            }
+                                        ],
+                                    }
+                                ],
+                            },
+                            {
+                                type: TYPES_OF_FILES.directory,
+                                name: 'redux',
+                                content: [
+                                    {
+                                        type: TYPES_OF_FILES.file,
+                                        name: 'duck',
+                                        extension: '.js',
+                                        content: generateDuckFile(),
+                                    },
+                                    {
+                                        type: TYPES_OF_FILES.file,
+                                        name: 'saga',
+                                        extension: '.js',
+                                        content: generateSagaFile(),
+                                    },
+                                ]
+                            },
+                            {
+                                type: TYPES_OF_FILES.file,
+                                name: 'index',
+                                extension: '.js',
+                                content: pages.tablePage,
+                            },
+                        ]
+                    }
+                ];
+                break;
+            case COMPONENT_TYPES.modal:
+                componentName = pascalCase(`${moduleName} modal`);
+                break;
+        }
         
-        // downloadTxtFile(generateDuckFile(), "duck.txt");
-        // downloadTxtFile(generateSagaFile(), "saga.txt");
-        // downloadTxtFile(generatePage(), "page.txt");
+        downloadZipFile(fileStructure);
 
         notification.info({
             message: (

@@ -110,6 +110,7 @@ export default (generationObject) => {
 
     const moduleNameCamelCase = camelCase(moduleName);
     const pageName = pascalCase(`${moduleName} page`);
+    const pageTableName = pascalCase(`${moduleName} table`);
     const modalName = pascalCase(`${moduleName} modal`);
     const enrichedActions = enrichActions(actions);
 
@@ -119,6 +120,7 @@ export default (generationObject) => {
         moduleName: moduleNameCamelCase,
         actions: enrichedActions,
         pageName,
+        pageTableName,
         modalName,
     };
 }

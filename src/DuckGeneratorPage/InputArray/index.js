@@ -171,6 +171,7 @@ export default class InputArray extends React.Component {
                             actions={[
                                 <Button onClick={() => this.deleteItem(item.key)}><DeleteTwoTone /></Button>
                             ]}
+                            key={v4()}
                         >
                             <div className={"item"}>
                                 <Input

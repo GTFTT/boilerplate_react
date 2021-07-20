@@ -1,10 +1,17 @@
 
 //own
 import { lines } from "utils";
-import poorPageGenerator from "./poorPageGenerator/poorPageGenerator"
+import poorPageGenerator from "./poorPageGenerator/poorPageGenerator";
 
-export default ({pageName, moduleDescription, generatingComponent, actions}) => {
+import tablePageGenerator from "./tablePageGenerator/tablePageGenerator";
+import tableGenerator from "./tablePageGenerator/tableGenerator";
+import tableConfigGenerator from "./tablePageGenerator/tableConfigGenerator";
+import tableStylesGenerator from "./tablePageGenerator/tableStylesGenerator";
 
+export default (generationObject) => {
+    const { moduleDescription, actions} = generationObject;
+
+    /** Poor page, contains nothing except basic layout. */
     const generatePoorPage = () => {
         const {
             generateImports,
@@ -23,7 +30,62 @@ export default ({pageName, moduleDescription, generatingComponent, actions}) => 
         ]);
     };
 
+    /** This is the page where table is invoked for rendering, there can be placed filters, modals, main description of the module etc. */
+    const generateTablePage = () => {
+        const {
+            generateImports,
+            generateMapStateToProps,
+            generateMapDispatchToProps,
+            generateClass,
+        } = tablePageGenerator(generationObject);
+
+        return lines([
+            generateImports(),
+            generateMapStateToProps(),
+            ``,
+            generateMapDispatchToProps(),
+            ``,
+            generateClass(),
+        ]);
+    }
+
+    /** This file contains table file, there configs and styles are connected */
+    const generateTable = () => {
+        const {
+            generateImports,
+            generateMapStateToProps,
+            generateMapDispatchToProps,
+            generateClass,
+        } = tableGenerator(generationObject);
+
+        return lines([
+            generateImports(),
+            generateMapStateToProps(),
+            ``,
+            generateMapDispatchToProps(),
+            ``,
+            generateClass(),
+        ]);
+    }
+
+    /** File that contains table's columns configuration */
+    const generateTableConfig = () => {
+        const { generateTableConfigFile } = tableConfigGenerator(generationObject);
+        return generateTableConfigFile();
+    }
+
+    /** Basic table styles and styles for fixing known issues */
+    const generateTableStyles = () => {
+        const { generateTableStyleFile } = tableStylesGenerator(generationObject);
+        return generateTableStyleFile();
+    }
+
     return {
-        generatePoorPage
+        generatePoorPage,
+
+        generateTablePage,
+        generateTable,
+        generateTableConfig,
+        generateTableStyles,
     };
 }

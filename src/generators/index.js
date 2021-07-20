@@ -72,23 +72,39 @@ export default (generationObject) => {
         return data;
     }
 
-    function generatePage() {
+    /**
+     * Generates pages depending on selected page mode(poor page, modal or something else)
+     * @returns Object that contains string representation of different files based on generation mode
+     */
+    function generatePages() {
         const {
             generatePoorPage,
-        } = pageGenerator(enrichedGenerationObject)
+
+            generateTablePage,
+            generateTable,
+            generateTableConfig,
+            generateTableStyles,
+        } = pageGenerator(enrichedGenerationObject);
+
+        let generatedPages = {};
 
         switch (generatingComponent) {
             case COMPONENT_TYPES.poorPage:
-                return generatePoorPage();
-        
-            default:
-                return undefined;
+                generatedPages.poorPage = generatePoorPage();
+
+            case COMPONENT_TYPES.tablePage:
+                generatedPages.tablePage = generateTablePage();
+                generatedPages.table = generateTable();
+                generatedPages.tableConfig = generateTableConfig();
+                generatedPages.tableStyles = generateTableStyles();        
         };
+
+        return generatedPages;
     }
 
     return {
         generateDuckFile,
         generateSagaFile,
-        generatePage,
+        generatePages,
     };
 };
