@@ -182,8 +182,8 @@ export default class DuckGeneratorPage extends React.Component {
 
         return (
             <div className="mainConst">
-                <Collapse className="collapse" defaultActiveKey={['1', '2']}>
-                    <Panel header="Settings" key="1">
+                <Collapse className="collapse" defaultActiveKey={['settings']}>
+                    <Panel header="Settings" key="settings">
                         <div className="settingsContainer">
                             <Input
                                 placeholder="Module name"
@@ -209,7 +209,9 @@ export default class DuckGeneratorPage extends React.Component {
                             </div>
                         </div>
                     </Panel>
-                    <Panel header="Create actions" key="2">
+                    <Panel header="Translations" key="translations"></Panel>
+                    <Panel header="Table configuration" key="tableConfigs"></Panel>
+                    <Panel header="Create actions" key="actions">
                         <div className="settingsContainer">
                             <Tabs className="tabs" tabPosition="left">
                                 <TabPane tab="Actions generator" key="1">
