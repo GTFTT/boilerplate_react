@@ -126,7 +126,7 @@ export default class DuckGeneratorPage extends React.Component {
                                                 type: TYPES_OF_FILES.file,
                                                 name: 'index',
                                                 extension: '.js',
-                                                content: '//Import and export all',
+                                                content: pages.tablesIndexFile,
                                             }
                                         ],
                                     }

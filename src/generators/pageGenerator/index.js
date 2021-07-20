@@ -7,6 +7,7 @@ import tablePageGenerator from "./tablePageGenerator/tablePageGenerator";
 import tableGenerator from "./tablePageGenerator/tableGenerator";
 import tableConfigGenerator from "./tablePageGenerator/tableConfigGenerator";
 import tableStylesGenerator from "./tablePageGenerator/tableStylesGenerator";
+import tablesIndexGenerator from "./tablePageGenerator/tablesIndexGenerator";
 
 export default (generationObject) => {
     const { moduleDescription, actions} = generationObject;
@@ -80,6 +81,12 @@ export default (generationObject) => {
         return generateTableStyleFile();
     }
 
+    /** index.js file for exporting table from tables directory */
+    const generateTablesIndexFile = () => {
+        const { generateTableIndexFile } = tablesIndexGenerator(generationObject);
+        return generateTableIndexFile();
+    }
+
     return {
         generatePoorPage,
 
@@ -87,5 +94,6 @@ export default (generationObject) => {
         generateTable,
         generateTableConfig,
         generateTableStyles,
+        generateTablesIndexFile,
     };
 }

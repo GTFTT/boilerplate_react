@@ -84,10 +84,12 @@ export default (generationObject) => {
             generateTable,
             generateTableConfig,
             generateTableStyles,
+            generateTablesIndexFile,
         } = pageGenerator(enrichedGenerationObject);
 
         let generatedPages = {};
 
+        //Return specific object for selected type of page
         switch (generatingComponent) {
             case COMPONENT_TYPES.poorPage:
                 generatedPages.poorPage = generatePoorPage();
@@ -97,6 +99,7 @@ export default (generationObject) => {
                 generatedPages.table = generateTable();
                 generatedPages.tableConfig = generateTableConfig();
                 generatedPages.tableStyles = generateTableStyles();        
+                generatedPages.tablesIndexFile = generateTablesIndexFile();        
         };
 
         return generatedPages;

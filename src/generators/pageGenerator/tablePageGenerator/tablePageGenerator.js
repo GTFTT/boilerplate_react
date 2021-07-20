@@ -26,7 +26,7 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             ``,
             `//own`,
             `import Styles from './styles.m.css';`,
-            `import ${pageTableName} from './components/Tables';`,
+            `import ${pageTableName} from './components/tables';`,
             `import {`,
 
             //Print each action separately
