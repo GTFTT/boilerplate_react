@@ -1,5 +1,6 @@
 .mainConst {
     margin: 1em 2em 1em 2em;
+    min-height: 150vh;
 }
 
 .collapse {
