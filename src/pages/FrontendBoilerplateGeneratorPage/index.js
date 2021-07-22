@@ -13,7 +13,7 @@ import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/enricher';
 
 //own
-import InputArray from './InputArray';
+import ActionsArray from './ActionsArray';
 import "./styles.css";
 import {
     setModuleName,
@@ -244,7 +244,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                         <div className="settingsContainer">
                             <Tabs className="tabs" tabPosition="left">
                                 <TabPane tab="Actions generator" key="1">
-                                    <InputArray />
+                                    <ActionsArray />
                                 </TabPane>
                                 <TabPane tab="Input" key="2">
                                     <div className="jsonContainer">

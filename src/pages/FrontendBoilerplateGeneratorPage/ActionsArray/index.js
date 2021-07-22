@@ -35,7 +35,7 @@ const mapDispatchToProps = {
  * 
  * @property { Function(actions) } actionsChanged - callback, called when actions are changed
  */
-class InputArray extends React.Component {
+class ActionsArray extends React.Component {
     /**
      * Used to update actions.
      * @param {*} params.actions - new actions to replace old with 
@@ -205,4 +205,4 @@ class InputArray extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InputArray);
+export default connect(mapStateToProps, mapDispatchToProps)(ActionsArray);
