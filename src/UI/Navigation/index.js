@@ -3,6 +3,7 @@ import React from 'react';
 import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import logo from "./logo.svg";
+import { v4 } from 'uuid';
 
 //proj
 
@@ -40,6 +41,7 @@ export default class Navigation extends React.Component {
                                 <NavigationButton
                                     label={title}
                                     path={path}
+                                    key={v4()}
                                 />
                             );
                         })}
