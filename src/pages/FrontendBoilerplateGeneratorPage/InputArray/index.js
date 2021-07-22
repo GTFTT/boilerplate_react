@@ -175,7 +175,7 @@ class InputArray extends React.Component {
                             actions={[
                                 <Button onClick={() => this.deleteAction(item.key)}><DeleteTwoTone /></Button>
                             ]}
-                            key={v4()}
+                            key={item.key}
                         >
                             <div className={"item"}>
                                 <Input
