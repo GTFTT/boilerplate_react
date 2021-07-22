@@ -16,18 +16,13 @@ export default class Public extends Component {
     render() {
         return (
             <Switch>
-                {/* <Route exact component={ LoginPage } path={ book.login } /> */}
-                {/* <Route
-                    exact
-                    component={ FrontendBoilerplateGeneratorPage }
-                    path={ book.frontendBoilerplateGenerator }
-                /> */}
                 <Route
                     exact
                     render={ props => <FrontendBoilerplateGeneratorPage { ...props } /> }
                     path={ book.frontendBoilerplateGenerator }
                 />
-                {/* <Redirect to={ book.login } /> */}
+
+                <Redirect to={ book.home } /> {/*Redirect to the default page*/}
             </Switch>
         );
     }
