@@ -23,6 +23,7 @@ import {
     selectModuleName,
     selectModuleDescription,
     selectGenerationComponentType,
+    selectActions,
 } from './redux/duck';
 
 const Panel = Collapse.Panel;
@@ -35,6 +36,7 @@ const mapStateToProps = state => ({
     moduleName: selectModuleName(state),
     moduleDescription: selectModuleDescription(state),
     generationComponentType: selectGenerationComponentType(state),
+    actions: selectActions(state),
 });
 
 const mapDispatchToProps = {
@@ -56,7 +58,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
     }
 
     onGenerateFiles = () => {
-        const {moduleName, generationComponentType, moduleDescription, actions} = this.state;
+        const { moduleName, generationComponentType, moduleDescription, actions } = this.props;
 
         if(!moduleName || _.isEmpty(actions)) {
             notification.error({message: "Not enough information provided!"});
@@ -202,13 +204,14 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
     render() {
 
         const {
-            actions,
+            // actions,
             // moduleName,
             // generationComponentType,
             // moduleDescription,
         } = this.state;
 
         const {
+            actions,
             moduleName,
             moduleDescription,
             generationComponentType,
@@ -256,11 +259,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                         <div className="settingsContainer">
                             <Tabs className="tabs" tabPosition="left">
                                 <TabPane tab="Actions generator" key="1">
-                                    <InputArray
-                                        actionsChanged={(actions) => {
-                                            this.setState({ actions });
-                                        }}
-                                    />
+                                    <InputArray />
                                 </TabPane>
                                 <TabPane tab="Input" key="2">
                                     <div className="jsonContainer">

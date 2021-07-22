@@ -9,12 +9,14 @@ const prefix = `cpb/${moduleName}`;
 export const SET_MODULE_NAME = `${prefix}/SET_MODULE_NAME`;
 export const SET_MODULE_DESCRIPTION = `${prefix}/SET_MODULE_DESCRIPTION`;
 export const SET_GENERATION_COMPONENT_TYPE = `${prefix}/SET_GENERATION_COMPONENT_TYPE`;
+export const SET_ACTIONS = `${prefix}/SET_ACTIONS`;
 
 /** Reducer **/
 const ReducerState = {
     moduleName: undefined,
     moduleDescription: undefined,
     generationComponentType: COMPONENT_TYPES.poorPage,
+    actions: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -38,6 +40,12 @@ export default function reducer(state = ReducerState, action) {
                 generationComponentType: payload
             };
 
+        case SET_ACTIONS:
+			return {
+				...state, 
+				actions: payload
+			};
+
         default: return state;
     }
 }
@@ -47,6 +55,7 @@ export default function reducer(state = ReducerState, action) {
 export const selectModuleName = state => state[ moduleName ].moduleName;
 export const selectModuleDescription = state => state[ moduleName ].moduleDescription;
 export const selectGenerationComponentType = state => state[ moduleName ].generationComponentType;
+export const selectActions = state => state[ moduleName ].actions;
 
 /** Action Creators **/
 
@@ -62,5 +71,10 @@ export const setModuleDescription = (value) => ({
 
 export const setGenerationComponentType = (value) => ({
 	type: 	SET_GENERATION_COMPONENT_TYPE,
+	payload: value
+});
+
+export const setActions = (value) => ({
+	type: 	SET_ACTIONS,
 	payload: value
 });

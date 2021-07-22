@@ -5,9 +5,14 @@ import { DeleteTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import { camelCase, constantCase, sentenceCase } from 'change-case';
+import { connect } from "react-redux";
 
 //proj
 import { ACTION_TYPES, DEF_INIT_VALUES } from 'globalConstants';
+import {
+    setActions,
+    selectActions,
+} from 'pages/FrontendBoilerplateGeneratorPage/redux/duck';
 
 //own
 import './styles.css';
@@ -15,20 +20,22 @@ import './styles.css';
 const Item = List.Item;
 const Option = Select.Option;
 
+
+const mapStateToProps = state => ({
+    actions: selectActions(state),
+});
+
+const mapDispatchToProps = {
+    setActions,
+};
+
+
 /**
  * Generate array which represents one action. This action contains basic variables gained from the user.
  * 
- * action: {
- *      actionName,
- *      actionType,
- *      actionFetchURL,
- *      actionInitValue,
- *      key
- * }
- * 
  * @property { Function(actions) } actionsChanged - callback, called when actions are changed
  */
-export default class InputArray extends React.Component {
+class InputArray extends React.Component {
     constructor(props) {
         super(props);
 
@@ -43,19 +50,23 @@ export default class InputArray extends React.Component {
      * Call callback functions if something changed.
      * @param {*} newState 
      */
-    updateState = (newState) => {
-        const { actionsChanged } = this.props;
+    updateState = ({ actions }) => {
+        const { actionsChanged, setActions } = this.props;
 
-        this.setState(newState, () => actionsChanged && actionsChanged(_.get(this, 'state.actions')))
+        setActions( actions );
+
+        // this.setState({actions}, () => actionsChanged && actionsChanged(_.get(this, 'state.actions')))
     }
 
     /**
      * Generate new action with initial values setup
      */
     createNewItem = () => {
+        const { actions } = this.props;
+
         this.updateState({
             actions: [
-                ..._.get(this, 'state.actions'),
+                ...actions,
                 {
                     actionName: "vehicles",
                     actionType: ACTION_TYPES.fetch,
@@ -68,9 +79,11 @@ export default class InputArray extends React.Component {
     }
 
     deleteItem = (key) => {
+        const { actions } = this.props;
+
         this.updateState({
             actions: [
-                ..._.filter(_.get(this, 'state.actions'), (item) => item.key != key),
+                ..._.filter(actions, (item) => item.key != key),
             ]
         })
     }
@@ -133,7 +146,7 @@ export default class InputArray extends React.Component {
      * @param {*} params - action
      */
     changeActionProps = (key, {actionName, actionType, actionInitValue, actionFetchURL}) => {
-        const actions = _.get(this, 'state.actions');
+        const { actions } = this.props;
 
         const updatedActions = _.map(actions, (item) => {
             if(item.key == key)
@@ -155,13 +168,14 @@ export default class InputArray extends React.Component {
 
 
     render() {
+        const { actions } = this.props;
 
         return (
             <div>
                 <List
                     size={"small"}
                     bordered
-                    dataSource={_.get(this, 'state.actions')}
+                    dataSource={actions}
                     locale={{emptyText: (<div>No actions</div>)}}
                     header={
                         <Button onClick={() => this.createNewItem()} type="primary">Create a new one</Button>
@@ -199,3 +213,5 @@ export default class InputArray extends React.Component {
         );
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(InputArray);
