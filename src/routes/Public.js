@@ -4,7 +4,8 @@ import { Switch, Route, Redirect } from 'react-router';
 
 // proj
 import {
-    FrontendBoilerplateGeneratorPage
+    FrontendBoilerplateGeneratorPage,
+    Home,
  } from 'pages';
 
 import book from './book';
@@ -16,6 +17,11 @@ export default class Public extends Component {
     render() {
         return (
             <Switch>
+                <Route
+                    exact
+                    component={ Home }
+                    path={ book.home }
+                />
                 <Route
                     exact
                     render={ props => <FrontendBoilerplateGeneratorPage { ...props } /> }

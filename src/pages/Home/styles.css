@@ -1,0 +1,40 @@
+.mainConst {
+    margin: 1em 2em 1em 2em;
+    min-height: 150vh;
+}
+
+.collapse {
+    background-color: lightblue;
+    border-radius: 2em;
+    padding: 1em 0em 2em 0em;
+}
+
+.generateButton {
+    margin: 2em;
+}
+
+.jsonContainer {
+    text-align: left;
+}
+
+.settingsContainer {
+    background-color: rgb(201, 201, 201);
+    box-shadow: 2em 2em 4em rgb(67, 72, 73);
+    border-radius: 2em;
+    padding: 2em 1em 2em 1em;
+    margin-bottom: 2em;
+}
+
+.radioCont {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+.textArea {
+    margin-top: 2em;
+    /* background-color: transparent; */
+}
+
+.tabs {
+    background-color: transparent;
+}
