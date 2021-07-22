@@ -18,9 +18,11 @@ import "./styles.css";
 import {
     setModuleName,
     setModuleDescription,
+    setGenerationComponentType,
 
     selectModuleName,
     selectModuleDescription,
+    selectGenerationComponentType,
 } from './redux/duck';
 
 const Panel = Collapse.Panel;
@@ -32,11 +34,13 @@ const TextArea = Input.TextArea;
 const mapStateToProps = state => ({
     moduleName: selectModuleName(state),
     moduleDescription: selectModuleDescription(state),
+    generationComponentType: selectGenerationComponentType(state),
 });
 
 const mapDispatchToProps = {
     setModuleName,
     setModuleDescription,
+    setGenerationComponentType,
 };
 
 class FrontendBoilerplateGeneratorPage extends React.Component {
@@ -46,27 +50,27 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
         this.state = {
             moduleName: "test",
             moduleDescription: undefined,
-            generatingComponent: COMPONENT_TYPES.poorPage,
+            generationComponentType: COMPONENT_TYPES.poorPage,
             actions: [],
         };
     }
 
     onGenerateFiles = () => {
-        const {moduleName, generatingComponent, moduleDescription, actions} = this.state;
+        const {moduleName, generationComponentType, moduleDescription, actions} = this.state;
 
         if(!moduleName || _.isEmpty(actions)) {
             notification.error({message: "Not enough information provided!"});
             return;
         }
 
-        const { generateDuckFile, generateSagaFile, generatePages } = generators({actions, moduleName, generatingComponent, moduleDescription});
+        const { generateDuckFile, generateSagaFile, generatePages } = generators({actions, moduleName, generationComponentType, moduleDescription});
 
         let fileStructure = undefined;
         const pages = generatePages();
-        const enrichedValues = enricher({actions, moduleName, generatingComponent, moduleDescription});
+        const enrichedValues = enricher({actions, moduleName, generationComponentType, moduleDescription});
 
         let componentName = "";
-        switch (generatingComponent) {
+        switch (generationComponentType) {
             case COMPONENT_TYPES.poorPage:
                 componentName = enrichedValues.pageName;
                 fileStructure = [
@@ -200,16 +204,18 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
         const {
             actions,
             // moduleName,
-            generatingComponent,
+            // generationComponentType,
             // moduleDescription,
         } = this.state;
 
         const {
             moduleName,
             moduleDescription,
+            generationComponentType,
 
             setModuleName,
             setModuleDescription,
+            setGenerationComponentType,
         } = this.props;
 
         return (
@@ -233,7 +239,10 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                             <div className="radioCont">
                                 Module type:
                                 <br /> 
-                                <RadioGroup value={generatingComponent} onChange={(e) => this.setState({generatingComponent: e.target.value})}>
+                                <RadioGroup
+                                    value={generationComponentType}
+                                    onChange={(e) => setGenerationComponentType(e.target.value)}
+                                >
                                     <Radio value={COMPONENT_TYPES.poorPage}>Poor page</Radio>
                                     <Radio value={COMPONENT_TYPES.tablePage}>Table page</Radio>
                                     <Radio value={COMPONENT_TYPES.modal}>Modal</Radio>
@@ -271,7 +280,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                             displayObjectSize={false}
                                             displayDataTypes={false}
                                             collapseStringsAfterLength={true}
-                                            src={enricher({actions, moduleName, generatingComponent, moduleDescription})}
+                                            src={enricher({actions, moduleName, generationComponentType, moduleDescription})}
                                         />
                                     </div>
                                 </TabPane>

@@ -32,7 +32,7 @@ import pageGenerator from './pageGenerator';
  */
 export default (generationObject) => {
     const enrichedGenerationObject = enricher(generationObject);
-    const { generatingComponent } = enrichedGenerationObject;
+    const { generationComponentType } = enrichedGenerationObject;
 
     function generateDuckFile() {
         const {
@@ -90,7 +90,7 @@ export default (generationObject) => {
         let generatedPages = {};
 
         //Return specific object for selected type of page
-        switch (generatingComponent) {
+        switch (generationComponentType) {
             case COMPONENT_TYPES.poorPage:
                 generatedPages.poorPage = generatePoorPage();
 
