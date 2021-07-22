@@ -20,6 +20,8 @@ const DEF_INIT_VALUES = Object.freeze({
     zero: '0',
     emptyObject: '{}',
     emptyArray: '[]',
+    false: 'false',
+    true: 'true',
 });
 
 /**
