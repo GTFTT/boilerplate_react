@@ -45,7 +45,7 @@ export default class Navigation extends React.Component {
                         })}
                     </div>
                 </div>
-                <div>
+                <div className="children">
                     {children}
                 </div>
             </div>
