@@ -142,10 +142,11 @@ class InputArray extends React.Component {
             if(item.key == key)
                 return {
                     ...item,
-                    actionName: actionName? actionName: item.actionName,
+                    actionName: (actionName || actionName === "")? actionName: item.actionName,
+                    actionFetchURL: (actionFetchURL || actionFetchURL === "")? actionFetchURL: item.actionFetchURL,
+                    
                     actionType: actionType? actionType: item.actionType,
                     actionInitValue: actionInitValue? actionInitValue: item.actionInitValue,
-                    actionFetchURL: (actionFetchURL || actionFetchURL === "")? actionFetchURL: item.actionFetchURL,
                 }
             else
                 return item;
