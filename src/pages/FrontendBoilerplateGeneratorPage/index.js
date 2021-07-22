@@ -242,7 +242,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                     <Panel header="Table configuration" key="tableConfigs"></Panel>
                     <Panel header="Create actions" key="actions">
                         <div className="settingsContainer">
-                            <Tabs className="tabs" tabPosition="left">
+                            <Tabs className="tabs" tabPosition="top">
                                 <TabPane tab="Actions generator" key="1">
                                     <ActionsArray />
                                 </TabPane>
