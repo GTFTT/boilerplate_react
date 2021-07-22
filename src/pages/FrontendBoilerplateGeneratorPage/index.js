@@ -208,6 +208,8 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
 
         return (
             <div className="mainConst">
+                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate</Button>
+
                 <Collapse className="collapse" defaultActiveKey={['settings']}>
                     <Panel header="Settings" key="settings">
                         <div className="settingsContainer">
@@ -219,7 +221,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
 
                             <TextArea
                                 placeholder="Module description(comment)"
-                                rows={4}
+                                rows={2}
                                 className="textArea"
                                 onChange={(e) => setModuleDescription(e.target.value)}
                             />
@@ -271,8 +273,6 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                         </div>
                     </Panel>
                 </Collapse>
-
-                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate</Button>
             </div>
         );
     }
