@@ -4,6 +4,7 @@ import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
 import { pascalCase } from 'change-case';
+import { connect } from "react-redux";
 
 //proj
 import generators from "generators";
@@ -14,13 +15,31 @@ import enricher from 'generators/enricher';
 //own
 import InputArray from './InputArray';
 import "./styles.css";
+import {
+    setModuleName,
+    setModuleDescription,
+
+    selectModuleName,
+    selectModuleDescription,
+} from './redux/duck';
 
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 const TextArea = Input.TextArea;
 
-export default class FrontendBoilerplateGeneratorPage extends React.Component {
+
+const mapStateToProps = state => ({
+    moduleName: selectModuleName(state),
+    moduleDescription: selectModuleDescription(state),
+});
+
+const mapDispatchToProps = {
+    setModuleName,
+    setModuleDescription,
+};
+
+class FrontendBoilerplateGeneratorPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -178,7 +197,20 @@ export default class FrontendBoilerplateGeneratorPage extends React.Component {
 
     render() {
 
-        const {actions, moduleName, generatingComponent, moduleDescription} = this.state;
+        const {
+            actions,
+            // moduleName,
+            generatingComponent,
+            // moduleDescription,
+        } = this.state;
+
+        const {
+            moduleName,
+            moduleDescription,
+
+            setModuleName,
+            setModuleDescription,
+        } = this.props;
 
         return (
             <div className="mainConst">
@@ -188,14 +220,14 @@ export default class FrontendBoilerplateGeneratorPage extends React.Component {
                             <Input
                                 placeholder="Module name"
                                 value={moduleName}
-                                onChange={(e) => this.setState({moduleName: e.target.value})}
+                                onChange={(e) => setModuleName(e.target.value)}
                             />
 
                             <TextArea
                                 placeholder="Module description(comment)"
                                 rows={4}
                                 className="textArea"
-                                onChange={(e) => this.setState({moduleDescription: e.target.value})}
+                                onChange={(e) => setModuleDescription(e.target.value)}
                             />
 
                             <div className="radioCont">
@@ -253,3 +285,5 @@ export default class FrontendBoilerplateGeneratorPage extends React.Component {
         );
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(FrontendBoilerplateGeneratorPage);
