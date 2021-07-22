@@ -36,21 +36,11 @@ const mapDispatchToProps = {
  * @property { Function(actions) } actionsChanged - callback, called when actions are changed
  */
 class InputArray extends React.Component {
-    constructor(props) {
-        super(props);
-
-        //Init state obj
-        this.state = {
-            actions: []
-        };
-    }
-
     /**
-     * Used to update state and perform additional actions.
-     * Call callback functions if something changed.
-     * @param {*} newState 
+     * Used to update actions.
+     * @param {*} params.actions - new actions to replace old with 
      */
-    updateState = ({ actions }) => {
+    updateActions = ({ actions }) => {
         const { actionsChanged, setActions } = this.props;
 
         setActions( actions );
@@ -61,14 +51,14 @@ class InputArray extends React.Component {
     /**
      * Generate new action with initial values setup
      */
-    createNewItem = () => {
+    createNewAction = () => {
         const { actions } = this.props;
 
-        this.updateState({
+        this.updateActions({
             actions: [
                 ...actions,
                 {
-                    actionName: "vehicles",
+                    actionName: "test",
                     actionType: ACTION_TYPES.fetch,
                     actionFetchURL: undefined,
                     actionInitValue: DEF_INIT_VALUES.undefinedValue,
@@ -78,10 +68,10 @@ class InputArray extends React.Component {
         })
     }
 
-    deleteItem = (key) => {
+    deleteAction = (key) => {
         const { actions } = this.props;
 
-        this.updateState({
+        this.updateActions({
             actions: [
                 ..._.filter(actions, (item) => item.key != key),
             ]
@@ -161,7 +151,7 @@ class InputArray extends React.Component {
                 return item;
         })
 
-        this.updateState({
+        this.updateActions({
             actions: updatedActions
         })
     } 
@@ -178,12 +168,12 @@ class InputArray extends React.Component {
                     dataSource={actions}
                     locale={{emptyText: (<div>No actions</div>)}}
                     header={
-                        <Button onClick={() => this.createNewItem()} type="primary">Create a new one</Button>
+                        <Button onClick={() => this.createNewAction()} type="primary">Create a new one</Button>
                     }
                     renderItem={item => (
                         <Item
                             actions={[
-                                <Button onClick={() => this.deleteItem(item.key)}><DeleteTwoTone /></Button>
+                                <Button onClick={() => this.deleteAction(item.key)}><DeleteTwoTone /></Button>
                             ]}
                             key={v4()}
                         >

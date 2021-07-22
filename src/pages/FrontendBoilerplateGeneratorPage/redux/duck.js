@@ -13,7 +13,7 @@ export const SET_ACTIONS = `${prefix}/SET_ACTIONS`;
 
 /** Reducer **/
 const ReducerState = {
-    moduleName: undefined,
+    moduleName: "test",
     moduleDescription: undefined,
     generationComponentType: COMPONENT_TYPES.poorPage,
     actions: [],

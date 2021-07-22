@@ -48,13 +48,6 @@ const mapDispatchToProps = {
 class FrontendBoilerplateGeneratorPage extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            moduleName: "test",
-            moduleDescription: undefined,
-            generationComponentType: COMPONENT_TYPES.poorPage,
-            actions: [],
-        };
     }
 
     onGenerateFiles = () => {
@@ -202,14 +195,6 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
     }
 
     render() {
-
-        const {
-            // actions,
-            // moduleName,
-            // generationComponentType,
-            // moduleDescription,
-        } = this.state;
-
         const {
             actions,
             moduleName,
@@ -268,7 +253,6 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                             displayObjectSize={false}
                                             displayDataTypes={false}
                                             collapseStringsAfterLength={true}
-                                            src={this.state}
                                         />
                                     </div>
                                 </TabPane>
