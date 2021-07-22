@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 
 // proj
-import DuckGeneratorPage from 'DuckGeneratorPage';
+import {
+    FrontendBoilerplateGeneratorPage
+ } from 'pages';
 
 import book from './book';
 
@@ -17,12 +19,12 @@ export default class Public extends Component {
                 {/* <Route exact component={ LoginPage } path={ book.login } /> */}
                 {/* <Route
                     exact
-                    component={ DuckGeneratorPage }
+                    component={ FrontendBoilerplateGeneratorPage }
                     path={ book.frontendBoilerplateGenerator }
                 /> */}
                 <Route
                     exact
-                    render={ props => <DuckGeneratorPage { ...props } /> }
+                    render={ props => <FrontendBoilerplateGeneratorPage { ...props } /> }
                     path={ book.frontendBoilerplateGenerator }
                 />
                 {/* <Redirect to={ book.login } /> */}

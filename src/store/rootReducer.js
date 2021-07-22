@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 // proj
 
-import duckGeneratorPageReducer, {moduleName as duckGeneratorPageModule} from 'DuckGeneratorPage/redux/duck';
+import frontendBoilerplateGeneratorPageReducer, {moduleName as frontendBoilerplateGeneratorPageModule} from 'pages/FrontendBoilerplateGeneratorPage/redux/duck';
 
 // own
 import history from './history';
@@ -17,13 +17,13 @@ export const persistConfig = {
     key:       'persistedStore',
     storage:   persistStorage,
     whitelist: [
-        duckGeneratorPageModule,
+        frontendBoilerplateGeneratorPageModule,
     ],
 };
 
 /** Persisted state will no change after reloading of the page */
 const persistedState = {
-    [ duckGeneratorPageModule ]:   duckGeneratorPageReducer,
+    [ frontendBoilerplateGeneratorPageModule ]:   frontendBoilerplateGeneratorPageReducer,
     router:                        connectRouter(history),
 };
 

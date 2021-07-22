@@ -20,7 +20,7 @@ const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 const TextArea = Input.TextArea;
 
-export default class DuckGeneratorPage extends React.Component {
+export default class FrontendBoilerplateGeneratorPage extends React.Component {
     constructor(props) {
         super(props);
 
