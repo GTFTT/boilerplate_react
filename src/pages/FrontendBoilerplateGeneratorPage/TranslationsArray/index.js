@@ -127,7 +127,7 @@ class ActionsArray extends React.Component {
                     }
                     renderItem={item => (
                         <Item
-                            translations={[
+                            actions={[
                                 <Button onClick={() => this.deleteTranslation(item.key)}><DeleteTwoTone /></Button>
                             ]}
                             key={item.key}
