@@ -23,12 +23,14 @@ export const persistConfig = {
 
 /** Persisted state will no change after reloading of the page */
 const persistedState = {
-    [ frontendBoilerplateGeneratorPageModule ]:   frontendBoilerplateGeneratorPageReducer,
+    // [ frontendBoilerplateGeneratorPageModule ]:   frontendBoilerplateGeneratorPageReducer,
     router:                        connectRouter(history),
 };
 
 /** There should be placed object that have storage that will be dropped after reload */
-const appState = {};
+const appState = {
+    [ frontendBoilerplateGeneratorPageModule ]:   frontendBoilerplateGeneratorPageReducer,
+};
 
 const appReducer = combineReducers({ ...persistedState, ...appState });
 

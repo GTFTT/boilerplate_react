@@ -3,13 +3,14 @@ import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 
 /** Constants **/
 
-export const moduleName = 'vehiclesPage';
+export const moduleName = 'frontendBoilerplateGeneratorPage';
 const prefix = `cpb/${moduleName}`;
 
 export const SET_MODULE_NAME = `${prefix}/SET_MODULE_NAME`;
 export const SET_MODULE_DESCRIPTION = `${prefix}/SET_MODULE_DESCRIPTION`;
 export const SET_GENERATION_COMPONENT_TYPE = `${prefix}/SET_GENERATION_COMPONENT_TYPE`;
 export const SET_ACTIONS = `${prefix}/SET_ACTIONS`;
+export const SET_TRANSLATIONS = `${prefix}/SET_TRANSLATIONS`;
 
 /** Reducer **/
 const ReducerState = {
@@ -17,6 +18,7 @@ const ReducerState = {
     moduleDescription: undefined,
     generationComponentType: COMPONENT_TYPES.poorPage,
     actions: [],
+    translations: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -46,6 +48,12 @@ export default function reducer(state = ReducerState, action) {
 				actions: payload
 			};
 
+        case SET_TRANSLATIONS:
+            return {
+                ...state, 
+                translations: payload
+            };
+
         default: return state;
     }
 }
@@ -55,7 +63,9 @@ export default function reducer(state = ReducerState, action) {
 export const selectModuleName = state => state[ moduleName ].moduleName;
 export const selectModuleDescription = state => state[ moduleName ].moduleDescription;
 export const selectGenerationComponentType = state => state[ moduleName ].generationComponentType;
+
 export const selectActions = state => state[ moduleName ].actions;
+export const selectTranslations = state => state[ moduleName ].translations;
 
 /** Action Creators **/
 
@@ -78,3 +88,9 @@ export const setActions = (value) => ({
 	type: 	SET_ACTIONS,
 	payload: value
 });
+
+export const setTranslations = (value) => ({
+	type: 	SET_TRANSLATIONS,
+	payload: value
+});
+
