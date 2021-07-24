@@ -15,6 +15,7 @@ import enricher from 'generators/enricher';
 //own
 import ActionsArray from './ActionsArray';
 import TranslationsArray from './TranslationsArray';
+import TableConfigurationsArray from './TableConfigurationsArray';
 import "./styles.css";
 import {
     setModuleName,
@@ -246,7 +247,9 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                         <TranslationsArray />
                     </Panel>
 
-                    <Panel header="Table configuration" key="tableConfigs"></Panel>
+                    <Panel header="Table configuration" key="tableConfigs">
+                        <TableConfigurationsArray />
+                    </Panel>
                     
                     <Panel header="Create actions" key="actions">
                         <div className="settingsContainer">

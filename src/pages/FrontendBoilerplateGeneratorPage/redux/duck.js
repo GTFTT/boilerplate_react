@@ -9,8 +9,10 @@ const prefix = `cpb/${moduleName}`;
 export const SET_MODULE_NAME = `${prefix}/SET_MODULE_NAME`;
 export const SET_MODULE_DESCRIPTION = `${prefix}/SET_MODULE_DESCRIPTION`;
 export const SET_GENERATION_COMPONENT_TYPE = `${prefix}/SET_GENERATION_COMPONENT_TYPE`;
+
 export const SET_ACTIONS = `${prefix}/SET_ACTIONS`;
 export const SET_TRANSLATIONS = `${prefix}/SET_TRANSLATIONS`;
+export const SET_TABLE_CONFIGS = `${prefix}/SET_TABLE_CONFIGS`;
 
 /** Reducer **/
 const ReducerState = {
@@ -19,6 +21,7 @@ const ReducerState = {
     generationComponentType: COMPONENT_TYPES.poorPage,
     actions: [],
     translations: [],
+    tableConfigs: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -53,6 +56,12 @@ export default function reducer(state = ReducerState, action) {
                 ...state, 
                 translations: payload
             };
+        
+        case SET_TABLE_CONFIGS:
+			return {
+				...state, 
+				tableConfigs: payload
+			};
 
         default: return state;
     }
@@ -66,6 +75,7 @@ export const selectGenerationComponentType = state => state[ moduleName ].genera
 
 export const selectActions = state => state[ moduleName ].actions;
 export const selectTranslations = state => state[ moduleName ].translations;
+export const selectTableConfigs = state => state[ moduleName ].tableConfigs;
 
 /** Action Creators **/
 
@@ -94,3 +104,7 @@ export const setTranslations = (value) => ({
 	payload: value
 });
 
+export const setTableConfigs = (value) => ({
+	type: 	SET_TABLE_CONFIGS,
+	payload: value
+});
