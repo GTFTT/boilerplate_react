@@ -10,6 +10,7 @@ import enricher from './enricher';
 import duckGenerator from './duckGenerator';
 import sagaGenerator from './sagaGenerator';
 import pageGenerator from './pageGenerator';
+import messagesGenerator from './messagesGenerator';
 
 /**
  * 
@@ -105,9 +106,19 @@ export default (generationObject) => {
         return generatedPages;
     }
 
+    function generateMessagesFile() {
+        const {
+            generateMessagesFile
+        } = messagesGenerator(enrichedGenerationObject);
+
+        return generateMessagesFile();
+
+    }
+
     return {
         generateDuckFile,
         generateSagaFile,
         generatePages,
+        generateMessagesFile,
     };
 };

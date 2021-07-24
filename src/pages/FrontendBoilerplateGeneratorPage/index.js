@@ -66,7 +66,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
 
         const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
 
-        const { generateDuckFile, generateSagaFile, generatePages } = generators(generationObject);
+        const { generateDuckFile, generateSagaFile, generatePages, generateMessagesFile } = generators(generationObject);
 
         let fileStructure = undefined;
         const pages = generatePages();
@@ -104,6 +104,12 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                 name: 'index',
                                 extension: '.js',
                                 content: pages.poorPage,
+                            },
+                            {
+                                type: TYPES_OF_FILES.file,
+                                name: 'messages',
+                                extension: '.json',
+                                content: generateMessagesFile(),
                             },
                         ]
                     }
@@ -181,6 +187,12 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                 name: 'index',
                                 extension: '.js',
                                 content: pages.tablePage,
+                            },
+                            {
+                                type: TYPES_OF_FILES.file,
+                                name: 'messages',
+                                extension: '.json',
+                                content: generateMessagesFile(),
                             },
                         ]
                     }
