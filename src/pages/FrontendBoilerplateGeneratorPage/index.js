@@ -26,6 +26,8 @@ import {
     selectModuleDescription,
     selectGenerationComponentType,
     selectActions,
+    selectTranslations,
+    selectTableConfigs,
 } from './redux/duck';
 
 const Panel = Collapse.Panel;
@@ -39,6 +41,8 @@ const mapStateToProps = state => ({
     moduleDescription: selectModuleDescription(state),
     generationComponentType: selectGenerationComponentType(state),
     actions: selectActions(state),
+    translations: selectTranslations(state),
+    tableConfigs: selectTableConfigs(state),
 });
 
 const mapDispatchToProps = {
@@ -53,18 +57,20 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
     }
 
     onGenerateFiles = () => {
-        const { moduleName, generationComponentType, moduleDescription, actions } = this.props;
+        const { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs } = this.props;
 
         if(!moduleName || _.isEmpty(actions)) {
             notification.error({message: "Not enough information provided!"});
             return;
         }
 
-        const { generateDuckFile, generateSagaFile, generatePages } = generators({actions, moduleName, generationComponentType, moduleDescription});
+        const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
+
+        const { generateDuckFile, generateSagaFile, generatePages } = generators(generationObject);
 
         let fileStructure = undefined;
         const pages = generatePages();
-        const enrichedValues = enricher({actions, moduleName, generationComponentType, moduleDescription});
+        const enrichedValues = enricher(generationObject);
 
         let componentName = "";
         switch (generationComponentType) {
@@ -202,11 +208,15 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             moduleName,
             moduleDescription,
             generationComponentType,
+            translations,
+            tableConfigs,
 
             setModuleName,
             setModuleDescription,
             setGenerationComponentType,
         } = this.props;
+
+        const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
 
         return (
             <div className="mainConst">
@@ -274,7 +284,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                             displayObjectSize={false}
                                             displayDataTypes={false}
                                             collapseStringsAfterLength={true}
-                                            src={enricher({actions, moduleName, generationComponentType, moduleDescription})}
+                                            src={enricher(generationObject)}
                                         />
                                     </div>
                                 </TabPane>
