@@ -101,6 +101,12 @@ function enrichActions(actions) {
     return Object.freeze(enrichedActions);
 }
 
+/**
+ * Enrich translations that will be used for a whole generated module
+ * @param {*} componentName - name of a component for which translations are generated
+ * @param {*} translations - translations object
+ * @returns 
+ */
 function enrichTranslations(componentName, translations) {
 
     const enrichedTranslations = _.map(translations, (translation) => {
@@ -118,6 +124,22 @@ function enrichTranslations(componentName, translations) {
     return Object.freeze(enrichedTranslations);
 }
 
+function enrichTableConfigs(tableConfigs, enrichedTranslations) {
+
+    const enrichedTableConfigs = _.map(tableConfigs, (tableConfig) => {
+        const translationOfCurrentConfig = _.get(_.filter(enrichedTranslations, obj => obj.key === tableConfig.tableConfigTranslationKey), '[0]')
+        let enriched =  {
+            ...tableConfig,
+            tableConfigName: camelCase(`${tableConfig.tableConfigName} col`),
+            formattedMessage: _.get(translationOfCurrentConfig, 'formattedMessage'),
+            formatMessage: _.get(translationOfCurrentConfig, 'formatMessage'),
+        };
+
+        return enriched;
+    })
+    return Object.freeze(enrichedTableConfigs);
+}
+
 
 /**
  * Before we start generation we have to enrich generation object - add more fields and pre-generate some variables.
@@ -131,12 +153,13 @@ export default (generationObject) => {
     const modalName = pascalCase(`${moduleName} modal`);
 
     //Component name for generating translations
-    const translationComponentName = (generationComponentType in [COMPONENT_TYPES.poorPage, COMPONENT_TYPES.tablePage] )
+    const translationComponentName = ([COMPONENT_TYPES.poorPage, COMPONENT_TYPES.tablePage].includes(generationComponentType))
         ? pageName
         : modalName;
 
     const enrichedActions = enrichActions(actions);
     const enrichedTranslations = enrichTranslations(translationComponentName, translations);
+    const enrichedTableConfigs = enrichTableConfigs(tableConfigs, enrichedTranslations);
 
     const componentName = (generationComponentType == COMPONENT_TYPES.poorPage)
         ? pageName
@@ -144,15 +167,18 @@ export default (generationObject) => {
             ? pageTableName
             : modalName;
 
-    return {
+    return Object.freeze({
         ...generationObject,
 
         moduleName: moduleNameCamelCase,
         componentName, //Current component name
+
         actions: enrichedActions,
         translations: enrichedTranslations,
+        tableConfigs: enrichedTableConfigs,
+
         pageName,
         pageTableName,
         modalName,
-    };
+    });
 }
