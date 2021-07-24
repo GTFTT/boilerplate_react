@@ -1,5 +1,5 @@
 //vendor
-import { constantCase, camelCase, capitalCase, pascalCase } from 'change-case'; //For converting different types of variables(camelCase, snake case, etc.)
+import { constantCase, camelCase, capitalCase, pascalCase, snakeCase } from 'change-case'; //For converting different types of variables(camelCase, snake case, etc.)
 import _ from 'lodash';
 
 //proj
@@ -10,7 +10,7 @@ import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
  * @param {*} actions 
  * @returns Enriched actions
  */
- function enrichActions(actions) {
+function enrichActions(actions) {
     const enrichedActions = _.map(actions, (action) => {
         let enriched =  {
             ...action,
@@ -101,24 +101,56 @@ import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
     return Object.freeze(enrichedActions);
 }
 
+function enrichTranslations(componentName, translations) {
+
+    const enrichedTranslations = _.map(translations, (translation) => {
+        let enriched =  {
+            ...translation,
+            constantEn: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationEn || ''}"`,
+            constantUk: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationUk || ''}"`,
+            constantRu: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationRu || ''}"`,
+            formattedMessage: `<FormattedMessage id="${snakeCase(componentName )}.${snakeCase(translation.translationName)}">`,
+            formatMessage: `formatMessage({ id: '${snakeCase(componentName )}.${snakeCase(translation.translationName)}' })`,
+        };
+
+        return enriched;
+    })
+    return Object.freeze(enrichedTranslations);
+}
+
 
 /**
  * Before we start generation we have to enrich generation object - add more fields and pre-generate some variables.
  */
 export default (generationObject) => {
-    const { moduleName, actions } = generationObject;
+    const { moduleName, generationComponentType, actions, translations, tableConfigs } = generationObject;
 
     const moduleNameCamelCase = camelCase(moduleName);
     const pageName = pascalCase(`${moduleName} page`);
     const pageTableName = pascalCase(`${moduleName} table`);
     const modalName = pascalCase(`${moduleName} modal`);
+
+    //Component name for generating translations
+    const translationComponentName = (generationComponentType in [COMPONENT_TYPES.poorPage, COMPONENT_TYPES.tablePage] )
+        ? pageName
+        : modalName;
+
     const enrichedActions = enrichActions(actions);
+    const enrichedTranslations = enrichTranslations(translationComponentName, translations);
+
+    const componentName = (generationComponentType == COMPONENT_TYPES.poorPage)
+        ? pageName
+        : (generationComponentType == COMPONENT_TYPES.tablePage)
+            ? pageTableName
+            : modalName;
 
     return {
         ...generationObject,
 
         moduleName: moduleNameCamelCase,
+        componentName, //Current component name
         actions: enrichedActions,
+        translations: enrichedTranslations,
         pageName,
         pageTableName,
         modalName,
