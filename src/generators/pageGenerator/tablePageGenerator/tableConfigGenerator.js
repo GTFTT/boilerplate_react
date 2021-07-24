@@ -28,14 +28,14 @@ export default (generationObject) => {
             ``, 
             `//Choose width for each col, (100% in total or less than 100% if 'auto' is present)`, 
             `const defWidth = {`,
-            _.map(tableConfigs, ({tableConfigName, tableConfigWidth}) => `\t${tableConfigName}: '${tableConfigWidth}'`).join(",\n"),
+            _.map(tableConfigs, ({tableConfigName, tableConfigWidth}) => `${tableConfigName}: '${tableConfigWidth}'`).join(",\n"),
             `}`, 
             ``,
             `export function columnsConfig() {`, 
             _.map(tableConfigs, ({ tableConfigName, tableConfigDataIndex, tableConfigAlign, formattedMessage }) => {
                 return lines([
                 `    const ${tableConfigName} = {`, 
-                `        title:     ${formattedMessage},`, 
+                `        title:     (${formattedMessage}),`, 
                 `        width:     defWidth.${tableConfigName},`,
                 `        align:     '${tableConfigAlign}',`,
                 `        dataIndex: '${tableConfigDataIndex}',`, 

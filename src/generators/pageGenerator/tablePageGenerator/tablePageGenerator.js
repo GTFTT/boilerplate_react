@@ -32,24 +32,24 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             //Print each action separately
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({actionCreators}) => `\t${actionCreators.set},`
+                ({actionCreators}) => `${actionCreators.set},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({actionCreators}) => `\t${actionCreators.fetch},`
+                ({actionCreators}) => `${actionCreators.fetch},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.poorSagaAction),
-                ({actionCreators}) => `\t${actionCreators.poorSagaAction},`
+                ({actionCreators}) => `${actionCreators.poorSagaAction},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.poorReducerAction),
-                ({actionCreators}) => `\t${actionCreators.poorReducerAction},`
+                ({actionCreators}) => `${actionCreators.poorReducerAction},`
             ),
-            `};`,
+            `} from 'pages/${pageName}/redux/duck';`,
             `\n`
         ]);
 
@@ -62,15 +62,15 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({valueNames, selectors}) => lines([
-                    `\t${valueNames.value}: ${selectors.value}(state),`,
-                    `\t${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
+                    `${valueNames.value}: ${selectors.value}(state),`,
+                    `${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
                     ``,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({valueNames, selectors}) => `\t${valueNames.value}: ${selectors.value}(state),`
+                ({valueNames, selectors}) => `${valueNames.value}: ${selectors.value}(state),`
             ), 
             `});`,
         ]);
@@ -84,13 +84,13 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({ actionCreators}) => lines([
-                    `\t${actionCreators.fetch},`,
+                    `${actionCreators.fetch},`,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({ actionCreators}) => `\t${actionCreators.set},`
+                ({ actionCreators}) => `${actionCreators.set},`
             ), 
             `});`,
         ]);
@@ -110,40 +110,39 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             `@injectIntl`,
             `@connect(mapStateToProps, mapDispatchToProps)`,
             `export default class ${pageName} extends Component {`,
-            `\tconstructor(props) {`,
-            `\t\tsuper(props);`,
-            `\t}`,
+            `constructor(props) {`,
+            `super(props);`,
+            `}`,
             ``,
-            `\trender() {`,
-            `\t\tconst {`,
+            `render() {`,
+            `const {`,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({valueNames, selectors}) => lines([
-                    `\t\t\t${valueNames.value},`,
-                    `\t\t\t${valueNames.fetchingValue},`,
+                    `${valueNames.value},`,
+                    `${valueNames.fetchingValue},`,
                     ``,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({valueNames, selectors}) => `\t\t\t${valueNames.value},`
+                ({valueNames, selectors}) => `${valueNames.value},`
             ),
-            `\t\t} = this.props;`,
+            `} = this.props;`,
             ``,
-            `\t\treturn (`,
-            `\t\t\t<div>`,
-            `\t\t\t\t<Layout`,
-            `\t\t\t\t\ttitle={ <FormattedMessage id={ 'generate.generate' } /> }`,
-            `\t\t\t\t\tcontrols={}`,
-            `\t\t\t\t>`,
-            `\t\t\t\t\t<div>`,
-            `\t\t\t\t\t\t<${pageTableName} />`,
-            `\t\t\t\t\t</div>`,
-            `\t\t\t\t</Layout>`,
-            `\t\t\t</div>`,
-            `\t\t)`,
-            `\t}`,
+            `return (`,
+            `<div>`,
+            `<Layout`,
+            `title={ <FormattedMessage id={ 'generate.generate' } /> }`,
+            `>`,
+            `<div>`,
+            `<${pageTableName} />`,
+            `</div>`,
+            `</Layout>`,
+            `</div>`,
+            `)`,
+            `}`,
             `}`,
         ]);
 

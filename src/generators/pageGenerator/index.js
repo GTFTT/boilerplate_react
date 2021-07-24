@@ -1,6 +1,7 @@
+//proj
+import { lines, parseJsx } from "utils";
 
 //own
-import { lines } from "utils";
 import poorPageGenerator from "./poorPageGenerator/poorPageGenerator";
 
 import tablePageGenerator from "./tablePageGenerator/tablePageGenerator";
@@ -21,7 +22,7 @@ export default (generationObject) => {
             generateClass,
         } = poorPageGenerator({moduleDescription, actions});
 
-        return lines([
+        const res = lines([
             generateImports(),
             generateMapStateToProps(),
             ``,
@@ -29,6 +30,8 @@ export default (generationObject) => {
             ``,
             generateClass(),
         ]);
+
+        return parseJsx(res);
     };
 
     /** This is the page where table is invoked for rendering, there can be placed filters, modals, main description of the module etc. */
@@ -40,7 +43,7 @@ export default (generationObject) => {
             generateClass,
         } = tablePageGenerator(generationObject);
 
-        return lines([
+        const res = lines([
             generateImports(),
             generateMapStateToProps(),
             ``,
@@ -48,6 +51,8 @@ export default (generationObject) => {
             ``,
             generateClass(),
         ]);
+
+        return parseJsx(res);
     }
 
     /** This file contains table file, there configs and styles are connected */
@@ -59,7 +64,7 @@ export default (generationObject) => {
             generateClass,
         } = tableGenerator(generationObject);
 
-        return lines([
+        const res = lines([
             generateImports(),
             generateMapStateToProps(),
             ``,
@@ -67,12 +72,14 @@ export default (generationObject) => {
             ``,
             generateClass(),
         ]);
+
+        return parseJsx(res);
     }
 
     /** File that contains table's columns configuration */
     const generateTableConfig = () => {
         const { generateTableConfigFile } = tableConfigGenerator(generationObject);
-        return generateTableConfigFile();
+        return parseJsx(generateTableConfigFile());
     }
 
     /** Basic table styles and styles for fixing known issues */
@@ -84,7 +91,7 @@ export default (generationObject) => {
     /** index.js file for exporting table from tables directory */
     const generateTablesIndexFile = () => {
         const { generateTableIndexFile } = tablesIndexGenerator(generationObject);
-        return generateTableIndexFile();
+        return parseJsx(generateTableIndexFile());
     }
 
     return {

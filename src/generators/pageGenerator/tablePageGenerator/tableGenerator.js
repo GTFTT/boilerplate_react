@@ -6,7 +6,7 @@ import { ACTION_TYPES } from 'globalConstants';
 import { lines } from 'utils';
 
 
-export default ({pageTableName, moduleDescription, actions}) => {
+export default ({pageName, pageTableName, moduleDescription, actions}) => {
 
     const generateImports = () => {
         let res = "";
@@ -33,24 +33,24 @@ export default ({pageTableName, moduleDescription, actions}) => {
             //Print each action separately
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({actionCreators}) => `\t${actionCreators.set},`
+                ({actionCreators}) => `${actionCreators.set},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({actionCreators}) => `\t${actionCreators.fetch},`
+                ({actionCreators}) => `${actionCreators.fetch},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.poorSagaAction),
-                ({actionCreators}) => `\t${actionCreators.poorSagaAction},`
+                ({actionCreators}) => `${actionCreators.poorSagaAction},`
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.poorReducerAction),
-                ({actionCreators}) => `\t${actionCreators.poorReducerAction},`
+                ({actionCreators}) => `${actionCreators.poorReducerAction},`
             ),
-            `};`,
+            `} from 'pages/${pageName}/redux/duck';`,
             `\n`
         ]);
 
@@ -63,15 +63,15 @@ export default ({pageTableName, moduleDescription, actions}) => {
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({valueNames, selectors}) => lines([
-                    `\t${valueNames.value}: ${selectors.value}(state),`,
-                    `\t${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
+                    `${valueNames.value}: ${selectors.value}(state),`,
+                    `${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
                     ``,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({valueNames, selectors}) => `\t${valueNames.value}: ${selectors.value}(state),`
+                ({valueNames, selectors}) => `${valueNames.value}: ${selectors.value}(state),`
             ), 
             `});`,
         ]);
@@ -85,13 +85,13 @@ export default ({pageTableName, moduleDescription, actions}) => {
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({ actionCreators}) => lines([
-                    `\t${actionCreators.fetch},`,
+                    `${actionCreators.fetch},`,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({ actionCreators}) => `\t${actionCreators.set},`
+                ({ actionCreators}) => `${actionCreators.set},`
             ), 
             `});`,
         ]);
@@ -111,41 +111,41 @@ export default ({pageTableName, moduleDescription, actions}) => {
             `@injectIntl`,
             `@connect(mapStateToProps, mapDispatchToProps)`,
             `export default class ${pageTableName} extends Component {`,
-            `\tconstructor(props) {`,
-            `\t\tsuper(props);`,
-            `\t}`,
+            `constructor(props) {`,
+            `super(props);`,
+            `}`,
             ``,
-            `\trender() {`,
-            `\t\tconst {`,
+            `render() {`,
+            `const {`,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({ valueNames }) => lines([
-                    `\t\t\t${valueNames.value},`,
-                    `\t\t\t${valueNames.fetchingValue},`,
+                    `${valueNames.value},`,
+                    `${valueNames.fetchingValue},`,
                     ``,
                 ])
             ),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({ valueNames }) => `\t\t\t${valueNames.value},`
+                ({ valueNames }) => `${valueNames.value},`
             ),
-            `\t\t} = this.props;`,
+            `} = this.props;`,
             ``,
-            `\t\treturn (`,
-            `\t\t\t<div className={Styles.tableContainer}>`,
-            `\t\t\t\t<${pageTableName}`,
-            `\t\t\t\t\tclassName={Styles.table}`,
-            `\t\t\t\t\tdataSource={ inspectionIntervals }`,
-            `\t\t\t\t\tcolumns={columnsConfig()}`,
-            `\t\t\t\t\tpagination={pagination}`,
-            `\t\t\t\t\tloading={fetchingVehicleInspectionIntervals}`,
-            `\t\t\t\t\trowKey={() => v4()}`,
-            `\t\t\t\t\tbordered`,
-            `\t\t\t\t/>`,
-            `\t\t\t</div>`,
-            `\t\t)`,
-            `\t}`,
+            `return (`,
+            `<div className={Styles.tableContainer}>`,
+            `<${pageTableName}`,
+            `className={Styles.table}`,
+            `dataSource={ inspectionIntervals }`,
+            `columns={columnsConfig()}`,
+            `pagination={pagination}`,
+            `loading={fetchingVehicleInspectionIntervals}`,
+            `rowKey={() => v4()}`,
+            `bordered`,
+            `/>`,
+            `</div>`,
+            `)`,
+            `}`,
             `}`,
         ]);
 

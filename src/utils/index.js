@@ -14,3 +14,4 @@ export const lines = (textArr) => {
 }
 
 export * from './fileSaver';
+export * from './fileParsers';

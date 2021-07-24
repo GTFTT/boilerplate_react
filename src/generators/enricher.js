@@ -115,7 +115,7 @@ function enrichTranslations(componentName, translations) {
             constantEn: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationEn || ''}"`,
             constantUk: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationUk || ''}"`,
             constantRu: `"${snakeCase(componentName )}.${snakeCase(translation.translationName)}": "${translation.translationRu || ''}"`,
-            formattedMessage: `<FormattedMessage id="${snakeCase(componentName )}.${snakeCase(translation.translationName)}">`,
+            formattedMessage: `<FormattedMessage id="${snakeCase(componentName )}.${snakeCase(translation.translationName)}" />`,
             formatMessage: `formatMessage({ id: '${snakeCase(componentName )}.${snakeCase(translation.translationName)}' })`,
         };
 
