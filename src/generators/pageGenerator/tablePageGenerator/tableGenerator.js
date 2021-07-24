@@ -26,6 +26,7 @@ export default ({pageTableName, moduleDescription, actions}) => {
             `import { setModal, MODALS } from 'core/modals/duck';`,
             ``,
             `//own`,
+            `import { columnsConfig } from './config';`,
             `import Styles from './styles.m.css';`,
             `import {`,
 
@@ -136,7 +137,7 @@ export default ({pageTableName, moduleDescription, actions}) => {
             `\t\t\t\t<${pageTableName}`,
             `\t\t\t\t\tclassName={Styles.table}`,
             `\t\t\t\t\tdataSource={ inspectionIntervals }`,
-            `\t\t\t\t\tcolumns={columns}`,
+            `\t\t\t\t\tcolumns={columnsConfig()}`,
             `\t\t\t\t\tpagination={pagination}`,
             `\t\t\t\t\tloading={fetchingVehicleInspectionIntervals}`,
             `\t\t\t\t\trowKey={() => v4()}`,
