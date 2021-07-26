@@ -66,7 +66,7 @@ export default ({moduleName, actions}) => {
                         `\t\t\tyield take(${constants.fetch});`,
                         ``,
                             `yield put(${actionCreators.setFetching}(true));`,
-                            `const filters = yield select(${selectors.filtersValue}(true));`,
+                            `const filters = yield select(${selectors.filtersValue});`,
                         ``,
                         `\t\t\tconst {${propertyName}, stats} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, { filters });`,
                         ``,
