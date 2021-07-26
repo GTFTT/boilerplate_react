@@ -1,6 +1,7 @@
 //vendor
 import { constantCase, camelCase, capitalCase, pascalCase, snakeCase } from 'change-case'; //For converting different types of variables(camelCase, snake case, etc.)
 import _ from 'lodash';
+import { notification } from "antd";
 
 //proj
 import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
@@ -174,7 +175,12 @@ export default (generationObject) => {
             : modalName;
 
     const dataSourceAction = _.get(_.filter(enrichedActions, 'isDataSource'), '[0]'); //Action which is selected as data source
-    if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) throw "data source action is not selected!";
+    
+    if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) {
+        notification.warning({
+            message: "Data source action is not selected, this can lead to incorrect generation!"
+        })
+    }
 
     return Object.freeze({
         ...generationObject,
