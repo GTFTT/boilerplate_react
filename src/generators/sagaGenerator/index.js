@@ -35,13 +35,19 @@ export default ({moduleName, actions}) => {
             ``,
             `// own`,
             `import {`,
-            ..._.map(fetchActions, ({constants}) => `\t${constants.fetch},`),
+            ..._.map(fetchActions, ({constants}) => `${constants.fetch},`),
             ``,
-            ..._.map(fetchActions, ({constants}) => `\t${constants.fetchSuccess},`),
+            ..._.map(fetchActions, ({constants}) => `${constants.fetchSuccess},`),
             ``,
-            ..._.map(poorSagaActions, ({constants}) => `\t${constants.poorSagaAction},`),
+            ..._.map(poorSagaActions, ({constants}) => `${constants.poorSagaAction},`),
             ``,
             ..._.map(setActions, ({constants}) => `\t${constants.set},`),
+            ``,
+            ``,
+            ..._.map(fetchActions, ({selectors}) => `${selectors.filtersValue},`),
+            ``,
+            ..._.map(fetchActions, ({actionCreators}) => `${actionCreators.setFetching},`),
+            ..._.map(fetchActions, ({actionCreators}) => `${actionCreators.fetchSuccess},`),
             `} from './duck';`,
             `\n`,
         ]);
@@ -49,7 +55,7 @@ export default ({moduleName, actions}) => {
     }
 
     function generateSagas() {
-        let result = _.map(actions, ({actionType, propertyName, constants, actionCreators, actionFetchURL, sagas}) => {
+        let result = _.map(actions, ({actionType, propertyName, selectors, constants, actionCreators, actionFetchURL, sagas}) => {
 
             switch (actionType) {
                 case ACTION_TYPES.fetch:
@@ -59,11 +65,12 @@ export default ({moduleName, actions}) => {
                         `\t\ttry {`,
                         `\t\t\tyield take(${constants.fetch});`,
                         ``,
-                        `\t\t\tyield put(${actionCreators.setFetching}(true));`,
+                            `yield put(${actionCreators.setFetching}(true));`,
+                            `const filters = yield select(${selectors.filtersValue}(true));`,
                         ``,
-                        `\t\t\tconst ${propertyName} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`);`,
+                        `\t\t\tconst {${propertyName}, stats} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, filters);`,
                         ``,
-                        `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}}));`,
+                        `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}, stats}));`,
                         `\t\t} catch (error) {`,
                         `\t\t\tyield put(emitError(error));`,
                         `\t\t} finally {`,
