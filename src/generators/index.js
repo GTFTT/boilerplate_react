@@ -12,6 +12,7 @@ import duckGenerator from './duckGenerator';
 import sagaGenerator from './sagaGenerator';
 import pageGenerator from './pageGenerator';
 import messagesGenerator from './messagesGenerator';
+import stylesGenerator from './stylesGenerator';
 
 /**
  * 
@@ -74,6 +75,16 @@ export default (generationObject) => {
         return parseJsx(data);
     }
 
+    function generateStylesFile() {
+        const {
+            generateStyleFile,
+        } = stylesGenerator(enrichedGenerationObject);
+
+        let data = generateStyleFile();
+
+        return data;
+    }
+
     /**
      * Generates pages depending on selected page mode(poor page, modal or something else)
      * @returns Object that contains string representation of different files based on generation mode
@@ -119,6 +130,7 @@ export default (generationObject) => {
     return {
         generateDuckFile,
         generateSagaFile,
+        generateStylesFile,
         generatePages,
         generateMessagesFile,
     };
