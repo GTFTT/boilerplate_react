@@ -163,7 +163,7 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
                 ``,
                 `return (`,
                         `<div className={Styles.tableContainer}>`,
-                            `<${pageTableName}`,
+                            `<Table`,
                                 `className={Styles.table}`,
                                 `dataSource={ ${_.get(dataSourceAction, 'valueNames.value')} }`,
                                 `columns={columnsConfig()}`,
