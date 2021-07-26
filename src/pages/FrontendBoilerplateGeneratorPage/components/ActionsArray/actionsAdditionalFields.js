@@ -58,7 +58,7 @@ const renderAdditionalFields = ({key, actionType, actionFetchURL }, options) => 
  * @param {*} params.actionType - type of an action
  * @param {*} options - Additional functions
  */
-const renderAdditionalSettings = ({key, actionType, actionInitValue}, options) => {
+const renderAdditionalSettings = ({key, actionType, actionInitValue, isDataSource}, options) => {
     const { changeActionProps } = options;
 
     const initValueSelect = (
@@ -80,13 +80,6 @@ const renderAdditionalSettings = ({key, actionType, actionInitValue}, options) =
                     </Select>
                 </Col>
             </Row>
-
-            <Row>
-                <Col span={12}>Make data source: </Col>
-                <Col span={12}>
-                    <Checkbox onChange={() => console.log("OK")} />
-                </Col>
-            </Row>
         </div>
     );
 
@@ -95,6 +88,12 @@ const renderAdditionalSettings = ({key, actionType, actionInitValue}, options) =
             return (
                 <div>
                     {initValueSelect}
+                    <Row>
+                        <Col span={12}>Make data source: </Col>
+                        <Col span={12}>
+                            <Checkbox checked={isDataSource} onChange={(e) => changeActionProps(key, {isDataSource: e.target.checked})} />
+                        </Col>
+                    </Row>
                 </div>
             )
         case ACTION_TYPES.set:

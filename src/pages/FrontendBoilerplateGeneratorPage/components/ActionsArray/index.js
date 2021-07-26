@@ -63,6 +63,7 @@ class ActionsArray extends React.Component {
                     actionType: ACTION_TYPES.fetch,
                     actionFetchURL: undefined,
                     actionInitValue: DEF_INIT_VALUES.undefinedValue,
+                    isDataSource: false,
                     key: v4(),
                 }
             ]
@@ -84,22 +85,24 @@ class ActionsArray extends React.Component {
      * Values will be replaced only if they are provided
      * @param {*} key - uuid
      * @param {*} params - action
+     * @param {*} params.isDataSource - if provided  only one action can be data source, other will becabe plain actions(isDataSource = undefined)
      */
-    changeActionProps = (key, {actionName, actionType, actionInitValue, actionFetchURL}) => {
+    changeActionProps = (key, options) => {
         const { actions } = this.props;
+        const { isDataSource } = options;
 
         const updatedActions = _.map(actions, (item) => {
             if(item.key == key)
                 return {
                     ...item,
-                    actionName: (actionName || actionName === "")? actionName: item.actionName,
-                    actionFetchURL: (actionFetchURL || actionFetchURL === "")? actionFetchURL: item.actionFetchURL,
-                    
-                    actionType: actionType? actionType: item.actionType,
-                    actionInitValue: actionInitValue? actionInitValue: item.actionInitValue,
+                    ...options,
+                    isDataSource: (isDataSource)? isDataSource: item.isDataSource
                 }
             else
-                return item;
+                return {
+                    ...item,
+                    isDataSource: (isDataSource)? false: item.isDataSource, //Remove other values
+                };
         })
 
         this.updateActions({
