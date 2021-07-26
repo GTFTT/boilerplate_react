@@ -55,7 +55,7 @@ export default ({moduleName, actions}) => {
     }
 
     function generateSagas() {
-        let result = _.map(actions, ({actionType, propertyName, selectors, constants, actionCreators, actionFetchURL, sagas}) => {
+        let result = _.map(actions, ({actionType, propertyName, selectors, constants, actionCreators, actionFetchURL, sagas, valueNames}) => {
 
             switch (actionType) {
                 case ACTION_TYPES.fetch:
@@ -68,9 +68,10 @@ export default ({moduleName, actions}) => {
                             `yield put(${actionCreators.setFetching}(true));`,
                             `const filters = yield select(${selectors.filtersValue});`,
                         ``,
-                        `\t\t\tconst {${propertyName}, stats} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, { filters });`,
+                        `\t\t\tconst response = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, { filters });`,
+                        `const {${propertyName}, ${valueNames.statsValue}} = response;`,
                         ``,
-                        `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}, stats}));`,
+                        `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}, ${valueNames.statsValue}}));`,
                         `\t\t} catch (error) {`,
                         `\t\t\tyield put(emitError(error));`,
                         `\t\t} finally {`,

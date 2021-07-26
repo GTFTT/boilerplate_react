@@ -67,11 +67,9 @@ function generateReducerSnippet({ actionType, constants, valueNames }) {
         case ACTION_TYPES.fetch:
             result = lines([
                 `\t\tcase ${constants.fetchSuccess}:`,
-                `\t\t\tconst { ${valueNames.value}, ${valueNames.statsValue} } = payload;`,
                 '\t\t\treturn {',
                 '\t\t\t\t...state, ',
-                `\t\t\t\t${valueNames.value}: ${valueNames.value},`,
-                `\t\t\t\t${valueNames.statsValue}: ${valueNames.statsValue},`,
+                `\t\t\t\t...payload,`,
                 '\t\t\t};',
 
                 `\t\tcase ${constants.setValueFilters}:`,
