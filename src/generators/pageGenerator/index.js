@@ -11,8 +11,7 @@ import tableStylesGenerator from "./tablePageGenerator/tableStylesGenerator";
 import tablesIndexGenerator from "./tablePageGenerator/tablesIndexGenerator";
 
 export default (generationObject) => {
-    const { moduleDescription, actions} = generationObject;
-
+    
     /** Poor page, contains nothing except basic layout. */
     const generatePoorPage = () => {
         const {
@@ -20,7 +19,7 @@ export default (generationObject) => {
             generateMapStateToProps,
             generateMapDispatchToProps,
             generateClass,
-        } = poorPageGenerator({moduleDescription, actions});
+        } = poorPageGenerator(generationObject);
 
         const res = lines([
             generateImports(),

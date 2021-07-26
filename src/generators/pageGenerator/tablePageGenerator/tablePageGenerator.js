@@ -6,7 +6,7 @@ import { ACTION_TYPES } from 'globalConstants';
 import { lines } from 'utils';
 
 
-export default ({pageName, pageTableName, moduleDescription, actions}) => {
+export default ({pageName, pageTableName, moduleDescription, actions, translations}) => {
 
     const generateImports = () => {
         let res = "";
@@ -99,6 +99,8 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
     }
 
     const generateClass = () => {
+        const titleTranslation = _.get(_.filter(translations, 'isPageTitle'), '[0]');
+
         let res = lines([
             `/**`,
             ...(
@@ -134,7 +136,7 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             `return (`,
             `<div>`,
             `<Layout`,
-            `title={ <FormattedMessage id={ 'generate.generate' } /> }`,
+            `title={ ${_.get(titleTranslation, 'formattedMessage')} }`,
             `>`,
             `<div>`,
             `<${pageTableName} />`,
