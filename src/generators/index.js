@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 //proj
 import { ACTION_TYPES, COMPONENT_TYPES } from 'globalConstants';
+import { parseJsx } from 'utils';
 
 //own
 import enricher from './enricher';
@@ -54,7 +55,7 @@ export default (generationObject) => {
             + generateSelectors() + "\n\n"
             + generateActionCreators() + "\n";
 
-        return data;
+        return parseJsx(data);
     }
 
     function generateSagaFile() {
@@ -70,7 +71,7 @@ export default (generationObject) => {
             + generateSagas() + "\n"
             + generateCommonSaga() + "\n";
 
-        return data;
+        return parseJsx(data);
     }
 
     /**
