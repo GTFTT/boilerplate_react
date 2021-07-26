@@ -1,6 +1,6 @@
 //vendor
 import React from 'react';
-import { Input, List, Button, Select, Popover, Row, Col } from 'antd';
+import { Input, List, Button, Select, Popover, Row, Col, Checkbox } from 'antd';
 import { DeleteTwoTone, SettingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
@@ -17,7 +17,6 @@ import {
 //own
 import './styles.css';
 
-const Item = List.Item;
 const Option = Select.Option;
 
 
@@ -27,7 +26,9 @@ const Option = Select.Option;
  * @param {*} params.key - action identifier
  * @param {*} params.actionType - type of an action
  */
-const renderAdditionalFields = ({key, actionType, actionFetchURL, actionInitValue}) => {
+const renderAdditionalFields = ({key, actionType, actionFetchURL }, options) => {
+    const { changeActionProps } = options;
+
     switch (actionType) {
         case ACTION_TYPES.fetch:
             return (
@@ -36,7 +37,7 @@ const renderAdditionalFields = ({key, actionType, actionFetchURL, actionInitValu
                         value={actionFetchURL}
                         className="input"
                         placeholder="Fetching URL"
-                        onChange={(e) => this.changeActionProps(key, {actionFetchURL: e.target.value})}
+                        onChange={(e) => changeActionProps(key, {actionFetchURL: e.target.value})}
                     />
                 </div>
             )
@@ -55,27 +56,38 @@ const renderAdditionalFields = ({key, actionType, actionFetchURL, actionInitValu
  * Each action has its additional settings we have to render components to make it possible to edit them
  * @param {*} params.key - action identifier
  * @param {*} params.actionType - type of an action
+ * @param {*} options - Additional functions
  */
-const renderAdditionalSettings = ({key, actionType, actionFetchURL, actionInitValue}) => {
+const renderAdditionalSettings = ({key, actionType, actionInitValue}, options) => {
+    const { changeActionProps } = options;
+
     const initValueSelect = (
-        <Row>
-            <Col span={12}>Select init value: </Col>
-            <Col span={12}>
-                <Select
-                    value={actionInitValue}
-                    className="select"
-                    placeholder="Select init value"
-                    onChange={(initValue) => this.changeActionProps(key, {actionInitValue: initValue})}
-                >
-                    {_.map(DEF_INIT_VALUES, (value, key) => {
-                        return (
-                            <Option value={value}>{sentenceCase(key)}</Option>
-                        )
-                    })}
-                </Select>
-            </Col>
-        </Row>
-        
+        <div>
+            <Row>
+                <Col span={12}>Initial value: </Col>
+                <Col span={12}>
+                    <Select
+                        value={actionInitValue}
+                        className="select"
+                        placeholder="Select init value"
+                        onChange={(initValue) => changeActionProps(key, {actionInitValue: initValue})}
+                    >
+                        {_.map(DEF_INIT_VALUES, (value, key) => {
+                            return (
+                                <Option value={value}>{sentenceCase(key)}</Option>
+                            )
+                        })}
+                    </Select>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col span={12}>Make data source: </Col>
+                <Col span={12}>
+                    <Checkbox onChange={() => console.log("OK")} />
+                </Col>
+            </Row>
+        </div>
     );
 
     switch (actionType) {

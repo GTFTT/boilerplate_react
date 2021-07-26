@@ -126,7 +126,15 @@ class ActionsArray extends React.Component {
                         <Item
                             actions={[
                                 (
-                                    <Popover content={<div className={"popoverContent"}>{renderAdditionalSettings(item)}</div>} title="Additional settings" trigger="click">
+                                    <Popover
+                                        content={
+                                            <div className={"popoverContent"}>
+                                                {renderAdditionalSettings(item, {changeActionProps: this.changeActionProps})}
+                                            </div>
+                                        }
+                                        title="Additional settings"
+                                        trigger="click"
+                                    >
                                         <Button onClick={() => console.log("OK")} type="primary"><SettingOutlined /></Button>
                                     </Popover>
                                 ),
@@ -152,7 +160,7 @@ class ActionsArray extends React.Component {
                                 </Select>
 
                                 <div>
-                                    {renderAdditionalFields(item)}
+                                    {renderAdditionalFields(item, {changeActionProps: this.changeActionProps})}
                                 </div>
                             </div>
                         </Item>
