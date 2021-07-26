@@ -68,7 +68,7 @@ export default ({moduleName, actions}) => {
                             `yield put(${actionCreators.setFetching}(true));`,
                             `const filters = yield select(${selectors.filtersValue}(true));`,
                         ``,
-                        `\t\t\tconst {${propertyName}, stats} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, filters);`,
+                        `\t\t\tconst {${propertyName}, stats} = yield call(fetchAPI, 'GET', \`${actionFetchURL? actionFetchURL: ""}\`, { filters });`,
                         ``,
                         `\t\t\tyield put(${actionCreators.fetchSuccess}({${propertyName}, stats}));`,
                         `\t\t} catch (error) {`,
