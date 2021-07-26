@@ -12,7 +12,9 @@ function generateConstant({ actionType, constants }) {
         case ACTION_TYPES.fetch:
             result +=`export const ${constants.fetch} = \`\${prefix}/${constants.fetch}\`;\n`;
             result +=`export const ${constants.fetchSuccess} = \`\${prefix}/${constants.fetchSuccess}\`;\n`;
-            result +=`export const ${constants.setFetching} = \`\${prefix}/${constants.setFetching}\`;\n\n`;
+            result +=`export const ${constants.setValueFilters} = \`\${prefix}/${constants.setValueFilters}\`;\n`;
+            result +=`export const ${constants.setFetching} = \`\${prefix}/${constants.setFetching}
+            \`;\n\n`;
             break;
 
         case ACTION_TYPES.set:
@@ -37,8 +39,14 @@ function generateReducerInitStateSnippet({ actionInitValue, actionType, valueNam
 
     switch (actionType) {
         case ACTION_TYPES.fetch:
-            res += `\t${valueNames.value}: ${actionInitValue},\n`;
-            res += `\t${valueNames.fetchingValue}: false,\n\n`;
+            res = lines([
+                `\t${valueNames.value}: ${actionInitValue},`,
+                `\t${valueNames.filtersValue}: {`,
+                'page: 1,',
+                `},`,
+                `\t${valueNames.statsValue}: {},`,
+                `\t${valueNames.fetchingValue}: false,\n`,
+            ]);
             break;
 
         case ACTION_TYPES.set:
@@ -60,11 +68,22 @@ function generateReducerSnippet({ actionType, constants, valueNames }) {
         case ACTION_TYPES.fetch:
             result = lines([
                 `\t\tcase ${constants.fetchSuccess}:`,
-                `\t\t\tconst { ${valueNames.value} } = payload;`,
+                `\t\t\tconst { ${valueNames.value}, ${valueNames.statsValue} } = payload;`,
                 '\t\t\treturn {',
                 '\t\t\t\t...state, ',
                 `\t\t\t\t${valueNames.value}: ${valueNames.value},`,
+                `\t\t\t\t${valueNames.statsValue}: ${valueNames.statsValue},`,
                 '\t\t\t};',
+
+                `\t\tcase ${constants.setValueFilters}:`,
+                '\t\t\treturn {',
+                '\t\t\t\t...state, ',
+                        `${valueNames.filtersValue}: {`,
+                            `...state.${valueNames.filtersValue},`,
+                            `...payload,`,
+                            `},`,
+                        '};',
+
                 `\t\tcase ${constants.setFetching}:`,
                 '\t\t\treturn {',
                 '\t\t\t\t...state, ',
@@ -108,10 +127,27 @@ function generateActionSnippet({ actionType, actionName, actionCreators, constan
                 `export const ${actionCreators.fetch} = () => ({`,
                 `\ttype: \t${constants.fetch},`,
                 '});\n',
-                `export const ${actionCreators.fetchSuccess} = ({${valueNames.value}}) => ({`,
+
+                `export const ${actionCreators.fetchSuccess} = ({${valueNames.value}, ${valueNames.statsValue}}) => ({`,
                 `\ttype: \t${constants.fetchSuccess},`,
-                `\tpayload: {${valueNames.value}}`,
+                `\tpayload: {${valueNames.value}, ${valueNames.statsValue}}`,
                 '});\n',
+
+                `/** Provide object with filters field you want to change, if you will not provide some filed, they will not be changed.`,
+                ` * If you provide 'null' or 'undefined', then field will be replaced with appropriate value.`,
+                ` * Automatically triggers data refreshing(action for fetching).`,
+                ` * @param { Object } filters - filters object, can contain any fields you want to override`,
+                ` */`,
+                `export const ${actionCreators.setValueFilters} = (filters) => {`,
+                `return function(dispatch) {`,
+                        `dispatch({`,
+                            `type: ${constants.setValueFilters},`,
+                            `payload: filters`,
+                        `});`,
+                        `dispatch(${actionCreators.fetch}());`,
+                    `}`,
+                `};\n\n`,
+
                 `export const ${actionCreators.setFetching} = (value) => ({`,
                 `\ttype: \t${constants.setFetching},`,
                 '\tpayload: value',
@@ -225,11 +261,16 @@ export default ({moduleName, actions}) => {
             `/* ------------------------------------- Selectors ------------------------------------- */\n`,
         ]);
 
-        _.each(actions, ({ actionType, actionName, selectors, valueNames }) => {
+        _.each(actions, ({ actionType, selectors, valueNames }) => {
             switch (actionType) {
                 case ACTION_TYPES.fetch:
-                    res += `export const ${selectors.value} = state => state[ moduleName ].${valueNames.value};\n`;
-                    res += `export const ${selectors.fetchingValue} = state => state[ moduleName ].${valueNames.fetchingValue};\n\n`;
+                    res += lines([
+                        `export const ${selectors.value} = state => state[ moduleName ].${valueNames.value};`,
+                        `export const ${selectors.statsValue} = state => state[ moduleName ].${valueNames.statsValue};`,
+                        `export const ${selectors.filtersValue} = state => state[ moduleName ].${valueNames.filtersValue};`,
+                        `export const ${selectors.fetchingValue} = state => state[ moduleName ].${valueNames.fetchingValue};`,
+                        `\n`,
+                    ]);
                     break;
         
                 case ACTION_TYPES.set:

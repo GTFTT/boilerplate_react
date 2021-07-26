@@ -23,12 +23,14 @@ function enrichActions(actions) {
             case ACTION_TYPES.fetch:
                 enriched.constants = {
                     setFetching: constantCase(`set fetching ${action.actionName}`),
+                    setValueFilters: constantCase(`set ${action.actionName} filters`),
                     fetch: constantCase(`${action.actionType} ${action.actionName}`),
                     fetchSuccess: constantCase(`${action.actionType} ${action.actionName} success`),
                 }
 
                 enriched.actionCreators = {
                     setFetching: camelCase(`set fetching ${action.actionName}`),
+                    setValueFilters: camelCase(`set ${action.actionName} filters`),
                     fetch: camelCase(`${action.actionType} ${action.actionName}`),
                     fetchSuccess: camelCase(`${action.actionType} ${action.actionName} success`),
                 }
@@ -40,11 +42,15 @@ function enrichActions(actions) {
                 //Used to store data inside them
                 enriched.valueNames = {
                     value: camelCase(`${action.actionName}`),
+                    statsValue: camelCase(`${action.actionName} stats`),
+                    filtersValue: camelCase(`${action.actionName} filters`),
                     fetchingValue: camelCase(`fetching ${action.actionName}`)
                 }
 
                 enriched.selectors = {
                     value: camelCase(`select ${action.actionName}`),
+                    statsValue: camelCase(`select ${action.actionName} stats`),
+                    filtersValue: camelCase(`select ${action.actionName} filters`),
                     fetchingValue: camelCase(`select fetching ${action.actionName}`)
                 }
 
