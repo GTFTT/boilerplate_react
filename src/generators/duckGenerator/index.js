@@ -13,8 +13,7 @@ function generateConstant({ actionType, constants }) {
             result +=`export const ${constants.fetch} = \`\${prefix}/${constants.fetch}\`;\n`;
             result +=`export const ${constants.fetchSuccess} = \`\${prefix}/${constants.fetchSuccess}\`;\n`;
             result +=`export const ${constants.setValueFilters} = \`\${prefix}/${constants.setValueFilters}\`;\n`;
-            result +=`export const ${constants.setFetching} = \`\${prefix}/${constants.setFetching}
-            \`;\n\n`;
+            result +=`export const ${constants.setFetching} = \`\${prefix}/${constants.setFetching}\`;\n\n`;
             break;
 
         case ACTION_TYPES.set:
