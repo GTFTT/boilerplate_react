@@ -6,7 +6,7 @@ import { ACTION_TYPES } from 'globalConstants';
 import { lines } from 'utils';
 
 
-export default ({pageName, pageTableName, moduleDescription, actions, translations}) => {
+export default ({pageName, pageTableName, moduleDescription, actions, dataSourceAction, translations}) => {
 
     const generateImports = () => {
         let res = "";
@@ -116,39 +116,41 @@ export default ({pageName, pageTableName, moduleDescription, actions, translatio
             `@injectIntl`,
             `@connect(mapStateToProps, mapDispatchToProps)`,
             `export default class ${pageName} extends Component {`,
-            `constructor(props) {`,
-            `super(props);`,
-            `}`,
-            ``,
-            `render() {`,
-            `const {`,
-            ..._.map(
-                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({valueNames, selectors}) => lines([
-                    `${valueNames.value},`,
-                    `${valueNames.fetchingValue},`,
+                `constructor(props) {`,
+                    `super(props);`,
                     ``,
-                ])
-            ),
-            ``,
-            ..._.map(
-                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({valueNames, selectors}) => `${valueNames.value},`
-            ),
-            `} = this.props;`,
-            ``,
-            `return (`,
-            `<div>`,
-            `<Layout`,
-            `title={ ${_.get(titleTranslation, 'formattedMessage')} }`,
-            `>`,
-            `<div>`,
-            `<${pageTableName} />`,
-            `</div>`,
-            `</Layout>`,
-            `</div>`,
-            `)`,
-            `}`,
+                    `this.props.${_.get(dataSourceAction, 'actionCreators.fetch')}();`,
+                `}`,
+                ``,
+                `render() {`,
+                    `const {`,
+                        ..._.map(
+                            _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
+                            ({valueNames, selectors}) => lines([
+                                `${valueNames.value},`,
+                                `${valueNames.fetchingValue},`,
+                                ``,
+                            ])
+                        ),
+                        ``,
+                        ..._.map(
+                            _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
+                            ({valueNames, selectors}) => `${valueNames.value},`
+                        ),
+                    `} = this.props;`,
+                    ``,
+                    `return (`,
+                        `<div>`,
+                            `<Layout`,
+                                `title={ ${_.get(titleTranslation, 'formattedMessage')} }`,
+                            `>`,
+                                `<div>`,
+                                    `<${pageTableName} />`,
+                                `</div>`,
+                            `</Layout>`,
+                        `</div>`,
+                    `)`,
+                `}`,
             `}`,
         ]);
 

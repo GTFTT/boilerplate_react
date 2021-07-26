@@ -6,11 +6,7 @@ import { ACTION_TYPES } from 'globalConstants';
 import { lines } from 'utils';
 
 
-export default ({pageName, pageTableName, moduleDescription, actions}) => {
-
-    const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
-
-    if(!dataSourceAction) throw "data source action is not selected!"
+export default ({pageName, pageTableName, moduleDescription, actions, dataSourceAction}) => {
 
     const generateImports = () => {
         let res = "";

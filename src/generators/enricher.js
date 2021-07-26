@@ -173,6 +173,9 @@ export default (generationObject) => {
             ? pageTableName
             : modalName;
 
+    const dataSourceAction = _.get(_.filter(enrichedActions, 'isDataSource'), '[0]'); //Action which is selected as data source
+    if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) throw "data source action is not selected!";
+
     return Object.freeze({
         ...generationObject,
 
@@ -182,6 +185,7 @@ export default (generationObject) => {
         actions: enrichedActions,
         translations: enrichedTranslations,
         tableConfigs: enrichedTableConfigs,
+        dataSourceAction,
 
         pageName,
         pageTableName,
