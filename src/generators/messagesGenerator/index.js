@@ -27,7 +27,7 @@ export default (generationObject) => {
 
             `\t"uk": {`,
             _.map(translations, ({ constantUk }) => `\t\t${constantUk}`).join(',\n'),
-            `\t},`,
+            `\t}`,
             `}`,
         ]);
     }
