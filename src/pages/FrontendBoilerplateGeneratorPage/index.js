@@ -3,7 +3,7 @@ import React from 'react';
 import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
-import { pascalCase } from 'change-case';
+import { pascalCase, camelCase } from 'change-case';
 import { connect } from "react-redux";
 
 //proj
@@ -229,13 +229,24 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             setModuleDescription,
             setGenerationComponentType,
         } = this.props;
-
+        
+        
         const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
+        const enrichedValues = enricher(generationObject);
+        const parentComponentName = (enrichedValues.generationComponentType == COMPONENT_TYPES.poorPage || enrichedValues.generationComponentType == COMPONENT_TYPES.tablePage)? camelCase(enrichedValues.pageName): camelCase(enrichedValues.modalName);
 
         return (
             <div className="mainConst">
                 <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate</Button>
-
+                <div style={{width: '90vw'}}>
+                    <p style={{width: '90vw', textAlign: 'left', fontSize: '0.6em'}}>
+                        Connect messages: {`import ${ pascalCase(parentComponentName) } from 'pages/${pascalCase(parentComponentName)}/messages';`}
+                        <br />
+                        Connect saga: {`import { saga as ${ parentComponentName }Saga } from 'pages/${pascalCase(parentComponentName)}/redux/saga';`}
+                        <br />
+                        Connect duck: {`import ${ parentComponentName }Reducer, {moduleName as ${parentComponentName}Module} from 'pages/${pascalCase(parentComponentName)}/redux/duck';`}
+                    </p>
+                </div>
                 <Collapse className="collapse" defaultActiveKey={['settings']}>
                     <Panel header="Settings" key="settings">
                         <div className="settingsContainer">
@@ -298,7 +309,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
                                             displayObjectSize={false}
                                             displayDataTypes={false}
                                             collapseStringsAfterLength={true}
-                                            src={enricher(generationObject)}
+                                            src={enrichedValues}
                                         />
                                     </div>
                                 </TabPane>
