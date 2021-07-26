@@ -84,7 +84,7 @@ export default ({pageName, pageTableName, moduleDescription, actions, translatio
 
     const generateMapDispatchToProps = () => {
         let res = lines([
-            `const mapDispatchToProps = state => ({`,
+            `const mapDispatchToProps = ({`,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({ actionCreators}) => lines([

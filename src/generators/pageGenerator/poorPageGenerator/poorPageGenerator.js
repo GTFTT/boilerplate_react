@@ -79,7 +79,7 @@ export default ({pageName, moduleDescription, actions, translations}) => {
 
     const generateMapDispatchToProps = () => {
         let res = lines([
-            `const mapDispatchToProps = state => ({`,
+            `const mapDispatchToProps = ({`,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({valueNames, actionCreators}) => lines([
@@ -99,7 +99,7 @@ export default ({pageName, moduleDescription, actions, translations}) => {
 
     const generateClass = () => {
         const titleTranslation = _.get(_.filter(translations, 'isPageTitle'), '[0]');
-        
+
         let res = lines([
             `/**`,
             ...(
