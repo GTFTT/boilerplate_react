@@ -1,7 +1,7 @@
 //vendor
 import React from 'react';
-import { Input, List, Button, Select } from 'antd';
-import { DeleteTwoTone } from '@ant-design/icons';
+import { Input, List, Button, Select, Popover, Row, Col } from 'antd';
+import { DeleteTwoTone, SettingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import { camelCase, constantCase, sentenceCase } from 'change-case';
@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 
 //proj
 import { ACTION_TYPES, DEF_INIT_VALUES } from 'globalConstants';
+import { renderAdditionalSettings } from "./translationsAdditionalFields";
 import {
     setTranslations,
     selectTranslations,
@@ -58,6 +59,7 @@ class ActionsArray extends React.Component {
                     translationEn: undefined,
                     translationUk: undefined,
                     translationRu: undefined,
+                    isPageTitle: false,
                     key: v4(),
                 }
             ]
@@ -81,29 +83,21 @@ class ActionsArray extends React.Component {
      */
     changeTranslation = (key, options) => {
         const { translations } = this.props;
+        const { isPageTitle } = options;
 
         const updatedTranslations = _.map(translations, (item) => {
             if(item.key == key)
                 return {
                     ...item,
-                    translationName: ("translationName" in options)
-                        ? options.translationName
-                        : item.translationName,
-
-                    translationEn: ("translationEn" in options)
-                        ? options.translationEn
-                        : item.translationEn,
-
-                    translationUk: ("translationUk" in options)
-                        ? options.translationUk
-                        : item.translationUk,
-
-                    translationRu: ("translationRu" in options)
-                        ? options.translationRu
-                        : item.translationRu,
+                    ...options,
                 }
             else
-                return item;
+                return {
+                    ...item,
+                    isPageTitle: ("isPageTitle" in options)
+                        ? false
+                        : item.isPageTitle
+                };
         })
 
         this.updateTranslations({
@@ -128,7 +122,22 @@ class ActionsArray extends React.Component {
                     renderItem={item => (
                         <Item
                             actions={[
-                                <Button onClick={() => this.deleteTranslation(item.key)}><DeleteTwoTone /></Button>
+                                (
+                                    <Popover
+                                        content={
+                                            <div className={"popoverContent"}>
+                                                {renderAdditionalSettings(item, {changeTranslation: this.changeTranslation})}
+                                            </div>
+                                        }
+                                        title="Additional settings"
+                                        trigger="click"
+                                    >
+                                        <Button onClick={() => console.log("OK")} type="primary"><SettingOutlined /></Button>
+                                    </Popover>
+                                ),
+                                (
+                                    <Button onClick={() => this.deleteTranslation(item.key)}><DeleteTwoTone /></Button>
+                                )
                             ]}
                             key={item.key}
                         >
