@@ -126,7 +126,7 @@ class ActionsArray extends React.Component {
                         <Item
                             actions={[
                                 (
-                                    <Popover content={renderAdditionalSettings(item)} title="Additional settings" trigger="click">
+                                    <Popover content={<div className={"popoverContent"}>{renderAdditionalSettings(item)}</div>} title="Additional settings" trigger="click">
                                         <Button onClick={() => console.log("OK")} type="primary"><SettingOutlined /></Button>
                                     </Popover>
                                 ),
