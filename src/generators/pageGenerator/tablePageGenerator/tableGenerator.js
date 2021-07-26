@@ -38,7 +38,10 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({actionCreators}) => `${actionCreators.fetch},`
+                ({actionCreators}) => lines([
+                    `${actionCreators.fetch},`,
+                    `${actionCreators.setValueFilters},`
+                ])
             ),
             ``,
             ..._.map(
@@ -64,6 +67,8 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({valueNames, selectors}) => lines([
                     `${valueNames.value}: ${selectors.value}(state),`,
+                    `${valueNames.statsValue}: ${selectors.statsValue}(state),`,
+                    `${valueNames.filtersValue}: ${selectors.filtersValue}(state),`,
                     `${valueNames.fetchingValue}: ${selectors.fetchingValue}(state),`,
                     ``,
                 ])
@@ -86,6 +91,7 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({ actionCreators}) => lines([
                     `${actionCreators.fetch},`,
+                    `${actionCreators.setValueFilters},`,
                 ])
             ),
             ``,
@@ -100,6 +106,8 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
     }
 
     const generateClass = () => {
+        const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
+
         let res = lines([
             `/**`,
             ...(
@@ -116,36 +124,49 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
             `}`,
             ``,
             `render() {`,
-            `const {`,
-            ..._.map(
-                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({ valueNames }) => lines([
-                    `${valueNames.value},`,
-                    `${valueNames.fetchingValue},`,
-                    ``,
-                ])
-            ),
-            ``,
-            ..._.map(
-                _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                ({ valueNames }) => `${valueNames.value},`
-            ),
-            `} = this.props;`,
-            ``,
-            `return (`,
-            `<div className={Styles.tableContainer}>`,
-            `<${pageTableName}`,
-            `className={Styles.table}`,
-            `dataSource={ inspectionIntervals }`,
-            `columns={columnsConfig()}`,
-            `pagination={pagination}`,
-            `loading={fetchingVehicleInspectionIntervals}`,
-            `rowKey={() => v4()}`,
-            `bordered`,
-            `/>`,
-            `</div>`,
-            `)`,
-            `}`,
+                `const {`,
+                ..._.map(
+                    _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
+                    ({ valueNames }) => lines([
+                        `${valueNames.value},`,
+                        `${valueNames.fetchingValue},`,
+                    ])
+                ),
+                ``,
+                `${_.get(dataSourceAction, 'valueNames.statsValue')},`,
+                `${_.get(dataSourceAction, 'valueNames.filtersValue')},`,
+                `${_.get(dataSourceAction, 'actionCreators.setValueFilters')},`,
+                ``,
+                ..._.map(
+                    _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
+                    ({ valueNames }) => `${valueNames.value},`
+                ),
+                `} = this.props;`,
+                ``,
+                `const pagination = {`,
+                    `pageSize: 25,`,
+                    `size: "large",`,
+                    `total: Math.ceil(${_.get(dataSourceAction, 'valueNames.statsValue')}.totalCount / 25) * 25,`,
+                    `current: ${_.get(dataSourceAction, 'valueNames.filtersValue')}.page,`,
+                    `onChange: page => {`,
+                        `${_.get(dataSourceAction, 'actionCreators.setValueFilters')}({page})`,
+                    `},`,
+                `}`,
+                ``,
+                `return (`,
+                        `<div className={Styles.tableContainer}>`,
+                            `<${pageTableName}`,
+                                `className={Styles.table}`,
+                                `dataSource={ ${_.get(dataSourceAction, 'valueNames.value')} }`,
+                                `columns={columnsConfig()}`,
+                                `pagination={pagination}`,
+                                `loading={ ${_.get(dataSourceAction, 'valueNames.fetchingValue')} }`,
+                                `rowKey={() => v4()}`,
+                                `bordered`,
+                            `/>`,
+                        `</div>`,
+                    `)`,
+                `}`,
             `}`,
         ]);
 
