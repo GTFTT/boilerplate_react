@@ -8,6 +8,10 @@ import { lines } from 'utils';
 
 export default ({pageName, pageTableName, moduleDescription, actions}) => {
 
+    const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
+
+    if(!dataSourceAction) throw "data source action is not selected!"
+
     const generateImports = () => {
         let res = "";
 
@@ -40,9 +44,15 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
                 ({actionCreators}) => lines([
                     `${actionCreators.fetch},`,
-                    `${actionCreators.setValueFilters},`
+                    `${actionCreators.setValueFilters},`,
                 ])
             ),
+            lines([
+                `${_.get(dataSourceAction, 'selectors.value')},`,
+                `${_.get(dataSourceAction, 'selectors.statsValue')},`,
+                `${_.get(dataSourceAction, 'selectors.filtersValue')},`,
+                `${_.get(dataSourceAction, 'selectors.fetchingValue')},`,
+            ]),
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.poorSagaAction),
@@ -106,8 +116,6 @@ export default ({pageName, pageTableName, moduleDescription, actions}) => {
     }
 
     const generateClass = () => {
-        const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
-
         let res = lines([
             `/**`,
             ...(

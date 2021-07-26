@@ -37,7 +37,11 @@ export default ({pageName, pageTableName, moduleDescription, actions, translatio
             ``,
             ..._.map(
                 _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                ({actionCreators}) => `${actionCreators.fetch},`
+                ({actionCreators, selectors}) => lines([
+                    `${actionCreators.fetch},`,
+                    `${selectors.value},`,
+                    `${selectors.fetchingValue},`,
+                ])
             ),
             ``,
             ..._.map(
