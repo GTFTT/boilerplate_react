@@ -13,10 +13,12 @@ import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/enricher';
 
 //own
-import ActionsArray from './ActionsArray';
-import TranslationsArray from './TranslationsArray';
-import TableConfigurationsArray from './TableConfigurationsArray';
 import "./styles.css";
+import {
+    ActionsArray,
+    TranslationsArray,
+    TableConfigurationsArray,
+} from './components';
 import {
     setModuleName,
     setModuleDescription,
