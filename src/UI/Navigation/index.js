@@ -28,25 +28,28 @@ export default class Navigation extends React.Component {
 
         return (
             <div className="mainCont">
-                <header className="header">
-                    <img src={logo} className="logo" alt="logo" />
-                    <div className="title">
-                        Boilerplate reducer
-                    </div>
-                </header>
-                <div className="sideMenu">
-                    <div className="sideMenuContent">
-                        {this.navigationConfig && _.map(this.navigationConfig, ({title, path}) => {
-                            return (
-                                <NavigationButton
-                                    label={title}
-                                    path={path}
-                                    key={v4()}
-                                />
-                            );
-                        })}
+                <div className="navigationAndHeaderPanel">
+                    <header className="header">
+                        <img src={logo} className="logo" alt="logo" />
+                        <div className="title">
+                            Boilerplate reducer
+                        </div>
+                    </header>
+                    <div className="sideMenu">
+                        <div className="sideMenuContent">
+                            {this.navigationConfig && _.map(this.navigationConfig, ({title, path}) => {
+                                return (
+                                    <NavigationButton
+                                        label={title}
+                                        path={path}
+                                        key={v4()}
+                                    />
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
+                
                 <div className="children">
                     {children}
                 </div>

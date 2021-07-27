@@ -7,14 +7,21 @@
     pointer-events: none;
 }
 
+.navigationAndHeaderPanel {
+    position: fixed;
+    width: 100%;
+    z-index: 6666;
+}
+
 .header {
-    background-color: #282c34;
+    background-color: #304d4a;
     min-height: 10vh;
     display: flex;
     flex-direction: row;
     align-items: center;
     font-size: calc(10px + 2vmin);
     color: rgb(193, 244, 255);
+    box-shadow: 0 0.4em 0.8em rgb(255, 255, 255);
 }
 
 .title {
@@ -28,7 +35,7 @@
 }
 
 .sideMenu {
-    background: rgb(36, 36, 36);    
+    background: rgb(0, 0, 0);
     display: flex;
     position: absolute;
     overflow: hidden;
@@ -44,13 +51,8 @@
     transition: width, 0.2s ease-in, height 0.4s ease-in-out 0.2s;
 }
 
-.sideMenu:hover > div {
-    color: red;
-    transition: all 0.8s ease-in-out 0.8s;
-}
-
 .children {
-    margin-top: 2em;
+    padding-top: 6em;
 }
 
 @media (prefers-reduced-motion: no-preference) {
