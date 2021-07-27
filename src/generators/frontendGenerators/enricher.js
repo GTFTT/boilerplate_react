@@ -175,12 +175,6 @@ export default (generationObject) => {
             : modalName;
 
     const dataSourceAction = _.get(_.filter(enrichedActions, 'isDataSource'), '[0]'); //Action which is selected as data source
-    
-    if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) {
-        notification.warning({
-            message: "Data source action is not selected, this can lead to incorrect generation!"
-        })
-    }
 
     return Object.freeze({
         ...generationObject,

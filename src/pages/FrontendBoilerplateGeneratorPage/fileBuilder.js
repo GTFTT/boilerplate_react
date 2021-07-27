@@ -17,12 +17,25 @@ import { ControlsContainer } from 'UI';
 const validateInitValues = (props) => {
     const { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs } = props;
 
-    if(!moduleName || _.isEmpty(actions)) {
-        notification.error({message: "Not enough information provided!"});
-        return;
+    let isOK = true;
+
+    if(!moduleName ) {
+        notification.error({message: "Module name is missing"});
+        isOK = false;
     }
 
-    return true;
+    if(_.isEmpty(actions)) {
+        notification.error({message: "Actions are not provided"});
+        isOK = false;
+    }
+
+    const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
+    if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) {
+        notification.error({message: "Data source action is not selected"});
+        isOK = false;
+    }
+
+    return isOK;
 }
 
 /**
@@ -31,6 +44,11 @@ const validateInitValues = (props) => {
  */
 const onGenerateFiles = (props) => {
     const { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs } = props;
+
+    if(!validateInitValues(props)) {
+        notification.info({message: "Canceled"});
+        return;
+    };
 
     const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
 
