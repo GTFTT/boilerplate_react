@@ -21,7 +21,7 @@
     align-items: center;
     font-size: calc(10px + 2vmin);
     color: rgb(193, 244, 255);
-    box-shadow: 0 0.4em 0.8em rgb(255, 255, 255);
+    box-shadow: 0 0.6em 0.8em rgb(255, 255, 255);
 }
 
 .title {
@@ -52,7 +52,7 @@
 }
 
 .children {
-    padding-top: 6em;
+    padding-top: 4em;
 }
 
 @media (prefers-reduced-motion: no-preference) {
