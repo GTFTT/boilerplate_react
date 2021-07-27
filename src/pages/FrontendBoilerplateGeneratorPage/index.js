@@ -11,6 +11,7 @@ import generators from "generators";
 import { downloadZipFile } from 'utils';
 import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/enricher';
+import { ControlsContainer } from 'UI';
 
 //own
 import "./styles.css";
@@ -249,7 +250,9 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
 
         return (
             <div className="mainConst">
-                <Button className="generateButton" onClick={() => this.onGenerateFiles()}>Generate</Button>
+                <ControlsContainer>
+                    <Button onClick={() => this.onGenerateFiles()}>Generate</Button>
+                </ControlsContainer>
                 <div style={{width: '90vw'}}>
                     <p style={{width: '90vw', textAlign: 'left', fontSize: '0.6em'}}>
                         Connect messages: {`import ${ pascalCase(parentComponentName) } from 'pages/${pascalCase(parentComponentName)}/messages';`}
