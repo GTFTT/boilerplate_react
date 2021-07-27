@@ -180,7 +180,7 @@ class TableConfigurationsArray extends React.Component {
                                 <Input
                                     value={_.get(item, 'tableConfigWidth')}
                                     placeholder="Width"
-                                    className="input"
+                                    className="smallInput"
                                     onChange={(e) => this.changeTableConfig(item.key, {tableConfigWidth: e.target.value})}
                                 />
 
@@ -193,7 +193,7 @@ class TableConfigurationsArray extends React.Component {
 
                                 <Select
                                     value={_.get(item, 'tableConfigAlign')}
-                                    className="select"
+                                    className="smallSelect"
                                     onChange={(align) => this.changeTableConfig(item.key, {tableConfigAlign: align})}
                                 >
                                     {_.map(ALIGN, (align) => (<Option value={align}>{align}</Option>))}

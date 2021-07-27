@@ -8,7 +8,15 @@
     width: 15vw;
 }
 
+.smallInput {
+    width: 8vw;
+}
+
 .select {
     width: 15vw;
+}
+
+.smallSelect {
+    width: 10vw;
 }
 
