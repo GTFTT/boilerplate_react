@@ -7,10 +7,10 @@ import { pascalCase, camelCase } from 'change-case';
 import { connect } from "react-redux";
 
 //proj
-import generators from "generators";
+import generators from "generators/frontendGenerators";
 import { downloadZipFile } from 'utils';
 import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
-import enricher from 'generators/enricher';
+import enricher from 'generators/frontendGenerators/enricher';
 import { ControlsContainer } from 'UI';
 
 //own
