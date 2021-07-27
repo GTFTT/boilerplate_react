@@ -15,6 +15,7 @@ import { ControlsContainer } from 'UI';
 
 //own
 import "./styles.css";
+import { onGenerateFiles } from './fileBuilder';
 import {
     ActionsArray,
     TranslationsArray,
@@ -59,175 +60,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
         super(props);
     }
 
-    onGenerateFiles = () => {
-        const { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs } = this.props;
-
-        if(!moduleName || _.isEmpty(actions)) {
-            notification.error({message: "Not enough information provided!"});
-            return;
-        }
-
-        const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
-
-        const { generateDuckFile, generateSagaFile, generatePages, generateMessagesFile, generateStylesFile } = generators(generationObject);
-
-        let fileStructure = undefined;
-        const pages = generatePages();
-        const enrichedValues = enricher(generationObject);
-
-        let componentName = "";
-        switch (generationComponentType) {
-            case COMPONENT_TYPES.poorPage:
-                componentName = enrichedValues.pageName;
-                fileStructure = [
-                    {
-                        type: TYPES_OF_FILES.directory,
-                        name: `${componentName}`,
-                        content: [
-                            {
-                                type: TYPES_OF_FILES.directory,
-                                name: 'redux',
-                                content: [
-                                    {
-                                        type: TYPES_OF_FILES.file,
-                                        name: 'duck',
-                                        extension: '.js',
-                                        content: generateDuckFile(),
-                                    },
-                                    {
-                                        type: TYPES_OF_FILES.file,
-                                        name: 'saga',
-                                        extension: '.js',
-                                        content: generateSagaFile(),
-                                    },
-                                ]
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'index',
-                                extension: '.js',
-                                content: pages.poorPage,
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'styles',
-                                extension: '.m.css',
-                                content: generateStylesFile(),
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'messages',
-                                extension: '.json',
-                                content: generateMessagesFile(),
-                            },
-                        ]
-                    }
-                ];
-                break;
-            case COMPONENT_TYPES.tablePage:
-                componentName = enrichedValues.pageName;
-                fileStructure = [
-                    {
-                        type: TYPES_OF_FILES.directory,
-                        name: `${componentName}`,
-                        content: [
-                            {
-                                type: TYPES_OF_FILES.directory,
-                                name: 'components',
-                                content: [
-                                    {
-                                        type: TYPES_OF_FILES.directory,
-                                        name: 'tables',
-                                        content: [
-                                            {
-                                                type: TYPES_OF_FILES.directory,
-                                                name: enrichedValues.pageTableName,
-                                                content: [
-                                                    {
-                                                        type: TYPES_OF_FILES.file,
-                                                        name: 'index',
-                                                        extension: '.js',
-                                                        content: pages.table,
-                                                    },
-                                                    {
-                                                        type: TYPES_OF_FILES.file,
-                                                        name: 'styles',
-                                                        extension: '.m.css',
-                                                        content: pages.tableStyles,
-                                                    },
-                                                    {
-                                                        type: TYPES_OF_FILES.file,
-                                                        name: 'config',
-                                                        extension: '.js',
-                                                        content: pages.tableConfig,
-                                                    },
-                                                ],
-                                            },
-                                            {
-                                                type: TYPES_OF_FILES.file,
-                                                name: 'index',
-                                                extension: '.js',
-                                                content: pages.tablesIndexFile,
-                                            }
-                                        ],
-                                    }
-                                ],
-                            },
-                            {
-                                type: TYPES_OF_FILES.directory,
-                                name: 'redux',
-                                content: [
-                                    {
-                                        type: TYPES_OF_FILES.file,
-                                        name: 'duck',
-                                        extension: '.js',
-                                        content: generateDuckFile(),
-                                    },
-                                    {
-                                        type: TYPES_OF_FILES.file,
-                                        name: 'saga',
-                                        extension: '.js',
-                                        content: generateSagaFile(),
-                                    },
-                                ]
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'index',
-                                extension: '.js',
-                                content: pages.tablePage,
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'styles',
-                                extension: '.m.css',
-                                content: generateStylesFile(),
-                            },
-                            {
-                                type: TYPES_OF_FILES.file,
-                                name: 'messages',
-                                extension: '.json',
-                                content: generateMessagesFile(),
-                            },
-                        ]
-                    }
-                ];
-                break;
-            case COMPONENT_TYPES.modal:
-                componentName = pascalCase(`${moduleName} modal`);
-                break;
-        }
-        
-        downloadZipFile(fileStructure);
-
-        notification.info({
-            message: (
-                <div>
-                    <div>{`Module: ${moduleName}`}</div>
-                </div>
-            )
-        });
-    }
+   
 
     render() {
         const {
@@ -243,7 +76,6 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             setGenerationComponentType,
         } = this.props;
         
-        
         const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
         const enrichedValues = enricher(generationObject);
         const parentComponentName = (enrichedValues.generationComponentType == COMPONENT_TYPES.poorPage || enrichedValues.generationComponentType == COMPONENT_TYPES.tablePage)? camelCase(enrichedValues.pageName): camelCase(enrichedValues.modalName);
@@ -251,7 +83,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
         return (
             <div className="mainConst">
                 <ControlsContainer>
-                    <Button onClick={() => this.onGenerateFiles()}>Generate</Button>
+                    <Button onClick={() => onGenerateFiles(generationObject)}>Generate</Button>
                 </ControlsContainer>
                 <div style={{width: '90vw'}}>
                     <p style={{width: '90vw', textAlign: 'left', fontSize: '0.6em'}}>
