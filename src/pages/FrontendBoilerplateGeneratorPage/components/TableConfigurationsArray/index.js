@@ -1,7 +1,7 @@
 //vendor
 import React from 'react';
 import { Input, List, Button, Select } from 'antd';
-import { DeleteTwoTone } from '@ant-design/icons';
+import { DeleteTwoTone, UpSquareOutlined, DownSquareOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import { connect } from "react-redux";
@@ -107,6 +107,37 @@ class TableConfigurationsArray extends React.Component {
         })
     } 
 
+    /**
+     * Move option up or down(swap with one that is upper or lover).
+     * If changing position is not possible, it does nothing.
+     * @param { * } key 
+     * @param { Boolean } [direction = true] true means 'move up', false means 'move down'
+     */
+    move(key, direction = true) {
+        const { tableConfigs } = this.props;
+        let posFirst = -1;
+        let posSecond = -1;
+
+        let newTableConfigs = _.map(tableConfigs, (tableConfig, index) => {
+            if(tableConfig.key == key) {
+                if(direction && index > 0) {
+                    posFirst = index-1;
+                    posSecond = index;
+                } else if (index < tableConfigs.length-1) {
+                    posFirst = index;
+                    posSecond = index + 1;
+                }
+            }
+            return tableConfig;
+        });
+
+        if(posFirst != -1 && posSecond != -1) {
+            [newTableConfigs[posFirst], newTableConfigs[posSecond]] = [newTableConfigs[posSecond], newTableConfigs[posFirst]]; //ES6 swap elements
+            this.updateTableConfigs({
+                tableConfigs: newTableConfigs
+            })
+        }
+    }
 
     render() {
         const { tableConfigs, translations } = this.props;
@@ -124,7 +155,9 @@ class TableConfigurationsArray extends React.Component {
                     renderItem={item => (
                         <Item
                             actions={[
-                                <Button onClick={() => this.deleteTableConfig(item.key)}><DeleteTwoTone /></Button>
+                                <Button onClick={() => this.deleteTableConfig(item.key)}><DeleteTwoTone /></Button>,
+                                <UpSquareOutlined onClick={() => this.move(item.key, true)} />,
+                                <DownSquareOutlined  onClick={() => this.move(item.key, false)} />
                             ]}
                             key={item.key}
                         >
