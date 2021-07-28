@@ -4,14 +4,13 @@ import { Collapse, Input, Button, notification, Tabs, Radio } from 'antd';
 import _ from 'lodash';
 import ReactJson from 'react-json-view'
 import { pascalCase, camelCase } from 'change-case';
-import { connect } from "react-redux";
 
 //proj
 import generators from "generators/frontendGenerators";
 import { downloadZipFile } from 'utils';
 import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/frontendGenerators/enricher';
-import { ControlsContainer } from 'UI';
+import { showError, showInfo } from 'UI';
 
 
 const validateInitValues = (props) => {
@@ -20,18 +19,18 @@ const validateInitValues = (props) => {
     let isOK = true;
 
     if(!moduleName ) {
-        notification.error({message: "Module name is missing"});
+        showError("Module name is missing");
         isOK = false;
     }
 
     if(_.isEmpty(actions)) {
-        notification.error({message: "Actions are not provided"});
+        showError("Actions are not provided");
         isOK = false;
     }
 
     const dataSourceAction = _.get(_.filter(actions, 'isDataSource'), '[0]'); //Action which is selected as data source
     if(!dataSourceAction && COMPONENT_TYPES.tablePage === generationComponentType) {
-        notification.error({message: "Data source action is not selected"});
+        showError("Data source action is not selected");
         isOK = false;
     }
 
@@ -46,7 +45,7 @@ const onGenerateFiles = (props) => {
     const { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs } = props;
 
     if(!validateInitValues(props)) {
-        notification.info({message: "Canceled"});
+        showInfo("Canceled");
         return;
     };
 
