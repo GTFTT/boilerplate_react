@@ -14,6 +14,8 @@ export const SET_ACTIONS = `${prefix}/SET_ACTIONS`;
 export const SET_TRANSLATIONS = `${prefix}/SET_TRANSLATIONS`;
 export const SET_TABLE_CONFIGS = `${prefix}/SET_TABLE_CONFIGS`;
 
+export const IMPORT_GENERATION_OBJECT = `${prefix}/IMPORT_GENERATION_OBJECT`;
+
 /** Reducer **/
 const ReducerState = {
     moduleName: "test",
@@ -63,6 +65,12 @@ export default function reducer(state = ReducerState, action) {
 				tableConfigs: payload
 			};
 
+        case IMPORT_GENERATION_OBJECT:
+            return {
+                ...state,
+                ...payload,
+            };
+
         default: return state;
     }
 }
@@ -107,4 +115,12 @@ export const setTranslations = (value) => ({
 export const setTableConfigs = (value) => ({
 	type: 	SET_TABLE_CONFIGS,
 	payload: value
+});
+
+/**
+ * This action used to import generation object and replace all current generation data
+ */
+export const importGenerationObject = (generationObject) => ({
+    type: IMPORT_GENERATION_OBJECT,
+    payload: generationObject
 });

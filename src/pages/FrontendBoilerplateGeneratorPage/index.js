@@ -12,7 +12,7 @@ import { downloadZipFile } from 'utils';
 import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/frontendGenerators/enricher';
 import { ControlsContainer } from 'UI';
-import { exportGenerationObject } from 'IO';
+import { exportGenerationObject, importGenerationObject } from 'IO';
 
 //own
 import "./styles.css";
@@ -33,6 +33,7 @@ import {
     selectActions,
     selectTranslations,
     selectTableConfigs,
+    importGenerationObject as importGenerationObjectInsideRedux,
 } from './redux/duck';
 
 const Panel = Collapse.Panel;
@@ -54,6 +55,7 @@ const mapDispatchToProps = {
     setModuleName,
     setModuleDescription,
     setGenerationComponentType,
+    importGenerationObjectInsideRedux,
 };
 
 class FrontendBoilerplateGeneratorPage extends React.Component {
@@ -75,6 +77,7 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             setModuleName,
             setModuleDescription,
             setGenerationComponentType,
+            importGenerationObjectInsideRedux,
         } = this.props;
         
         const initialGenerationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
@@ -85,8 +88,16 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             <div className="mainConst">
                 <ControlsContainer>
                     <Button title="Generate new component" onClick={() => onGenerateFiles(initialGenerationObject)}>Generate</Button>
+                    
                     <Button title="Export current generation object to a json file" onClick={() => exportGenerationObject(initialGenerationObject)}>Export</Button>
-                    <Button>Import</Button>
+                    
+                    <Button
+                        title="Import generation object from file"
+                        onClick={() => {
+                            const callback = (genObj) => genObj && importGenerationObjectInsideRedux(genObj);
+                            importGenerationObject(callback);
+                        }}
+                    >Import</Button>
                 </ControlsContainer>
                 <div style={{width: '90vw'}}>
                     <p style={{width: '90vw', textAlign: 'left', fontSize: '0.6em'}}>
