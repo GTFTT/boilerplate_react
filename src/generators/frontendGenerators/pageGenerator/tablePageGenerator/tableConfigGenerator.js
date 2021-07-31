@@ -35,10 +35,14 @@ export default (generationObject) => {
             _.map(tableConfigs, ({ tableConfigName, tableConfigDataIndex, tableConfigAlign, formattedMessage }) => {
                 return lines([
                 `    const ${tableConfigName} = {`, 
-                `        title:     (${formattedMessage}),`, 
+                formattedMessage
+                    ? `        title:     (${formattedMessage}),`
+                    : undefined, 
                 `        width:     defWidth.${tableConfigName},`,
                 `        align:     '${tableConfigAlign}',`,
-                `        dataIndex: '${tableConfigDataIndex}',`, 
+                tableConfigDataIndex
+                    ? `        dataIndex: '${tableConfigDataIndex}',`
+                    : undefined,
                 `        key:       '${tableConfigName}',`,
                 `    };`
                 ]);
