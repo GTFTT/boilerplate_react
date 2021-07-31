@@ -4,8 +4,12 @@ import _ from "lodash";
 
 //proj
 import { showError, showInfo, showSuccess } from 'UI'
-import { downloadFile } from 'utils';
 
+/**
+ * This is used to import .json file that contains generation object. When file is imported and parsed it will
+ * be passed with callback. If error occurs, undefined will be returned.
+ * @callback fileImportedCB - When file is loaded from local disk, this is called. File content is passed as first parameter
+ */
 const importGenerationObject = (fileImportedCB) => {
     const element = document.createElement("input");
     element.type = "file";
@@ -24,7 +28,7 @@ const importGenerationObject = (fileImportedCB) => {
         reader.onload = async (e) => { 
             const json = (e.target.result)
             try{
-                const parsedJson = JSON.parse(json);
+                const parsedJson = JSON.parse(json) || undefined;
                 fileImportedCB && fileImportedCB(parsedJson);
                 showSuccess("File loaded");
             } catch(err) {
