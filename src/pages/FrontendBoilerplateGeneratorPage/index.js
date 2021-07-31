@@ -12,6 +12,7 @@ import { downloadZipFile } from 'utils';
 import { COMPONENT_TYPES, TYPES_OF_FILES } from 'globalConstants';
 import enricher from 'generators/frontendGenerators/enricher';
 import { ControlsContainer } from 'UI';
+import { exportGenerationObject } from 'IO';
 
 //own
 import "./styles.css";
@@ -76,14 +77,16 @@ class FrontendBoilerplateGeneratorPage extends React.Component {
             setGenerationComponentType,
         } = this.props;
         
-        const generationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
-        const enrichedValues = enricher(generationObject);
+        const initialGenerationObject = { moduleName, generationComponentType, moduleDescription, actions, translations, tableConfigs };
+        const enrichedValues = enricher(initialGenerationObject);
         const parentComponentName = (enrichedValues.generationComponentType == COMPONENT_TYPES.poorPage || enrichedValues.generationComponentType == COMPONENT_TYPES.tablePage)? camelCase(enrichedValues.pageName): camelCase(enrichedValues.modalName);
 
         return (
             <div className="mainConst">
                 <ControlsContainer>
-                    <Button onClick={() => onGenerateFiles(generationObject)}>Generate</Button>
+                    <Button title="Generate new component" onClick={() => onGenerateFiles(initialGenerationObject)}>Generate</Button>
+                    <Button title="Export current generation object to a json file" onClick={() => exportGenerationObject(initialGenerationObject)}>Export</Button>
+                    <Button>Import</Button>
                 </ControlsContainer>
                 <div style={{width: '90vw'}}>
                     <p style={{width: '90vw', textAlign: 'left', fontSize: '0.6em'}}>
