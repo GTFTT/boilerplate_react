@@ -2,4 +2,6 @@
     width: 100%;
     display: flex;
     margin-bottom: 1em;
+    display: flex;
+    justify-content: space-evenly;
 }
