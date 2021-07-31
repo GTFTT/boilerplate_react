@@ -124,10 +124,13 @@ function generateActionSnippet({ actionType, actionName, actionCreators, constan
                 `export const ${actionCreators.fetch} = () => ({`,
                 `\ttype: \t${constants.fetch},`,
                 '});\n',
-
-                `export const ${actionCreators.fetchSuccess} = ({${valueNames.value}, ${valueNames.statsValue}}) => ({`,
+                `/* `,
+                ` * @param {*} fetchedData.${valueNames.value}`,
+                ` * @param {*} fetchedData.${valueNames.statsValue}`,
+                ` */`,
+                `export const ${actionCreators.fetchSuccess} = (fetchedData) => ({`,
                 `\ttype: \t${constants.fetchSuccess},`,
-                `\tpayload: {${valueNames.value}, ${valueNames.statsValue}}`,
+                `\tpayload: fetchedData`,
                 '});\n',
 
                 `/** Provide object with filters field you want to change, if you will not provide some filed, they will not be changed.`,
