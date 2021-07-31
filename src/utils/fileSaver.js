@@ -15,18 +15,20 @@ import { TYPES_OF_FILES } from 'globalConstants';
 const MAX_ZIP_DEEP = 10;
 
 /**
- * Save file on user's local machine. Just provide content you wnat to save.
+ * Save file on user's local machine. Just provide content you want to save.
  * @param { String } text - content of a file
+ * @param { String } [filename = 'myFile'] - filename
+ * @param { String } [extension = '.txt'] - extension
  * 
  * @example 
- * downloadTxtFile("Hello world", "hello.txt")
+ * downloadFile("Hello world", "hello.txt")
  */
- export const downloadTxtFile = (text, filename = 'myFile.txt') => {
+ export const downloadFile = (text, filename = 'myFile', extension = '.txt') => {
     const element = document.createElement("a");
     const file = new Blob([text], {type: 'text/plain'});
 
     element.href = URL.createObjectURL(file);
-    element.download = filename;
+    element.download = `${filename}${extension}`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
 }
