@@ -123,21 +123,6 @@ export default ({pageName, pageTableName, moduleDescription, actions, dataSource
                 `}`,
                 ``,
                 `render() {`,
-                    `const {`,
-                        ..._.map(
-                            _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.fetch),
-                            ({valueNames, selectors}) => lines([
-                                `${valueNames.value},`,
-                                `${valueNames.fetchingValue},`,
-                                ``,
-                            ])
-                        ),
-                        ``,
-                        ..._.map(
-                            _.filter(actions, ({actionType}) => actionType == ACTION_TYPES.set),
-                            ({valueNames, selectors}) => `${valueNames.value},`
-                        ),
-                    `} = this.props;`,
                     ``,
                     `return (`,
                         `<div>`,
